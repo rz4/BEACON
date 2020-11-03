@@ -10,7 +10,7 @@ setup(
     license="MIT",
     packages=find_packages(exclude=["artifacts", "examples"]),
     package_data={
-        'beacon': ['*.hy', '*.py'],
+        'beacon': ['*.hy', '*.py', 'lexicon/*.psv', 'bert/*.py', 'bert/*.hy'],
     },
     install_requires = ["hy", "torch", "dill", "pandas", "numpy", "tqdm"],
 )
