@@ -1,2 +1,2 @@
 # BEACON
-BERT Extracted Attention for Concept Ontology aNnotation
+BERT Extracted Attention for Clinical Ontology aNnotation
