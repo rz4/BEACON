@@ -87,9 +87,10 @@
 
               ;- Of selected tokens only append if token is part of lexicon term
 
-              rels-index (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (str (get idx-to-lex k)) []))))
+              rels-index (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (get idx-to-lex k) []))))
               rels-lex (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (get lex-labels (get idx-to-lex k)) [])))))
-        (.append df [key (.join "|" (sorted rels-index)) (.join "|" (sorted rels-lex))])))
+        (.append df [key (.join "|" (lfor x (sorted rels-index) (str x))) 
+                         (.join "|" (sorted rels-lex))])))
 
     ;- Merge Bert Relation Annoations to Clever Snippet Dataframe
     (->  beacon-tagged
