@@ -24,7 +24,7 @@
     (/ (np.sum (* array (- (* 2 index) n 1))) (* n (np.sum array)))))
 
 ;--
-(defn gini-select [values &optional [intervals 100]]
+(defn gini-select [values &optional [intervals 100] [threshold 0.55]]
 
   ;- Remove padding tokens and max/min normalize values
   (setv values (-> values .detach .numpy)
@@ -44,7 +44,7 @@
         minimum-gini gini-global]
     (for [(, i q size gini) (reversed ginis)]
       (when (and (> size 0)
-                 (>= gini 0.55)
+                 (>= gini threshold)
                  (< gini minimum-gini))
             (setv minimum-value q
                   minimum-gini gini)))
@@ -53,7 +53,7 @@
     (get df (> (get df "value") minimum-value) "index")))
 
 ;-- Annotate relations between lexicon terms and return a DataFrame
-(defn bert-relate [beacon-tagged bert depth]
+(defn bert-relate [beacon-tagged bert depth threshold]
 
   ;- Build dataframe of relations along each snippet
   (let [text-snippets (-> beacon-tagged (get ["snippet_index" "snippet_text" "snippet_startx"]) .drop-duplicates)
@@ -83,7 +83,7 @@
       (for [key lex-to-idx]
         (setv values (.sum (get attens 0 (get lex-to-idx key)) :dim 0)
               values (* values (get atten 0))
-              selections (gini-select values)
+              selections (gini-select values :threshold threshold)
 
               ;- Of selected tokens only append if token is part of lexicon term
 
@@ -101,4 +101,4 @@
 (defn build-relator [bert-model]
   (spec/assert :BertModel bert-model)
   (let [bert (Attention :bertrepr (BertRepr :bert (copy.deepcopy bert-model.bert)))]
-    (fn [df depth] (bert-relate df bert depth))))
+    (fn [df depth threshold] (bert-relate df bert depth threshold))))

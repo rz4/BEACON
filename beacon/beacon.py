@@ -82,12 +82,12 @@ class Beacon(object):
     self._lex_mapping = dict([(key, BASE58[i]) for (i, key) in enumerate(lexs)]) # Build lex to symbol mapping
     self._snippet_rules = dict([(key, self._build_rule(self.rules[key])) for key in self.rules])
 
-  def __call__(self, text, bert_depth=2, return_snippet_text=True):
+  def __call__(self, text, bert_depth=2, return_snippet_text=True, bert_threshold=0.55):
     preprocessed_text = self._preprocess(text) # First preprocess text
     tagged_text = self._tag_nounchunks(preprocessed_text)
     tagged_text = self._tag_by_lexicon(preprocessed_text, tagged_text) # Then tag lexs over text
     snippets = self._snip_by_rules(preprocessed_text, tagged_text) if tagged_text is not None else None # Finally match on snippet patterns
-    kg_annotated = self.bert_relate(snippets, bert_depth) if snippets is not None else None # Annonate tag relations using BERT
+    kg_annotated = self.bert_relate(snippets, bert_depth, bert_threshold) if snippets is not None else None # Annonate tag relations using BERT
     out = kg_annotated if kg_annotated is not None else pd.DataFrame([], columns=["index", "rels_index", "rels_lex",
                                                                                   "lex","startx","endx","text", "snippet_rule","snippet_regex",
                                                                                   "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])

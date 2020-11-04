@@ -21,7 +21,7 @@ from beacon import Beacon
 
 text = "Diagnosis: Patient is homeless and needs help."
 beacon = Beacon()
-annotations = beacon(text, bert_depth=2)
+annotations = beacon(text, bert_depth=2, bert_threshold=0.5)
 print(annotations)
 
 """
