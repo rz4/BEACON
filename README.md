@@ -1,5 +1,5 @@
 # BEACON
-BERT Extracted Attentions for Clinical Ontology aNnotation
+BERT Extracted Attention for Clinical Ontology aNnotation
 
 # Overview
 An exploration of building concept relations within clinical text
