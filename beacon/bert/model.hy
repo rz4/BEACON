@@ -1,10 +1,10 @@
-;-
+;- Macros
 (require [mino.mu [*]]
          [mino.thread [*]]
          [mino.spec [*]]
          [hy.contrib.walk [let]])
 
-;-
+;- Imports
 (import torch copy transformers
         [tqdm [tqdm]]
         [numpy :as np]
@@ -14,7 +14,7 @@
         [torch.utils.data [DataLoader]]
         [transformers [BertTokenizerFast BertForMaskedLM]])
 
-;--
+;-- Read a standard BERT architecture and model weights if provided.
 (defn read-bert [&optional [file None]]
   (let [model (BertForMaskedLM.from_pretrained "bert-base-uncased")]
     (when file (-> (torch.load file :map_location (torch.device "cpu"))
@@ -22,7 +22,7 @@
                    (->> (.load-state-dict model))))
     (.eval model)))
 
-;--
+;-- Data specification
 (spec/def :Dataframe (fn [x] (instance? pd.DataFrame x))
           :HasTextCol (fn [x] (in "text" (. x columns)))
           :BertData (spec/and :Dataframe :HasTextCol)
@@ -31,23 +31,23 @@
                                                       pooler (spec/modules)))
           :BertMLM (spec/and :BertModel (spec/modules cls (spec/modules))))
 
-;--
-(defmu BertRepr [inputs attens bert depth]
+;-- Module extracts BERTS internal representations (hidden layers and attention)
+(defmu BertRepr [inputs attens depth bert]
   (setv (, out _ hidden attention) (*-> [inputs attens]
                                         (bert :output_hidden_states True :output_attentions True))
         hiddens (torch.cat (cut hidden (- 0 depth)) -1)
         attentions (.sum (get attention (- 0 depth)) 1))
-  (for [a (cut attentions (- 1 depth))] (+= attentions (.sum a 1)))
+  (for [a (cut attention (- 1 depth))] (*= attentions (.sum a 1))) ; combine attention layers using product
   [(torch.cat [out hiddens] -1) attentions])
 
-;--
+;-- Return a language model inference model for single text strings
 (defn build-LM [model]
   (spec/assert :BertModel model)
   (fn [text]
     (setv (, inputs1 attens1 tokens1) (bert-input text))
     (model_output (list (get (torch.argmax (get (model inputs1 attens1) 0) -1) (.bool attens1))))))
 
-;--
+;-- Train standard BERT models
 (defn train-bert-mlm
   [model data &optional [masked-percent 0.25] [batch-size 10] [epochs 100] [devices [(torch.device "cpu")]]]
   (spec/assert :BertMLM model)
@@ -81,7 +81,7 @@
                   e i (int (/ (len dataset) batch-size)) (-> loss .detach .cpu) (-> acc .detach .cpu)))))
     (.cpu (.eval model))))
 
-;--
+;-- Evaluate standard BERT models
 (defn eval-bert-mlm
   [model data &optional [masked-percent 0.25] [batch-size 10] [devices [(torch.device "cpu")]]]
   (spec/assert :BertMLM model)

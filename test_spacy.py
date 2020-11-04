@@ -16,12 +16,12 @@ if __name__ == "__main__":
 
     #- Run beacon on text
     t = time()
-    result = nlp(text)
+    result =
     elapsed = time() - t
 
     #- Print result
-    df = [[token.text, token.dep_, token.head.text, token.head.pos_, ",".join([child.text.strip() for child in token.children])] for token in result]
-    df = pd.DataFrame(df, columns=["TEXT", "DEP", "HEAD_TEXT", "HEAD_POS", "CHILDREN"])
+    df = [[chunk.root.dep_.upper(), chunk.start_char, chunk.end_char, chunk.text] for chunk in nlp(text).noun_chunks]
+    df = pd.DataFrame(df, columns=["text", "lex", "startx", "endx"])
     print(df)
     print("Computed in (sec): {}".format(elapsed))
     #displacy.serve(result, style="dep")

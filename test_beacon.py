@@ -14,9 +14,10 @@ if __name__ == "__main__":
 
     #- Run beacon on text
     t = time()
-    result = beacon(text)
+    result = beacon(text, bert_depth=3)
     elapsed = time() - t
 
-    #- Print result
+    #- Print
     print(result)
+    print(result["snippet_text"].unique())
     print("Computed in (sec): {}".format(elapsed))

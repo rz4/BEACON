@@ -12,8 +12,8 @@
         [beacon.bert.model [BertRepr]])
 
 ;--
-(defmu Attention [x atten bertrepr]
-  (setv (, hiddens attens) (bertrepr x atten))
+(defmu Attention [x atten depth bertrepr]
+  (setv (, hiddens attens) (bertrepr x atten depth))
   attens)
 
 ;--
@@ -52,8 +52,8 @@
     ;- Return Token Indexes
     (get df (> (get df "value") minimum-value) "index")))
 
-;--
-(defn bert-relate [beacon-tagged bert]
+;-- Annotate relations between lexicon terms and return a DataFrame
+(defn bert-relate [beacon-tagged bert depth]
 
   ;- Build dataframe of relations along each snippet
   (let [text-snippets (-> beacon-tagged (get ["snippet_index" "snippet_text" "snippet_startx"]) .drop-duplicates)
@@ -70,6 +70,7 @@
 
       (for [(, _ lex) (.iterrows (get snippet ["index" "lex" "startx" "endx"]))]
         (setv (, index label startx endx) lex)
+        (when (in label ["DOT" "PUNCT"]) (continue))
         (for [(, i r) (enumerate offsets)]
           (setv (, ix ie) r)
           (when (and (>= (+ snippet-startx ix) startx) (<= (+ snippet-startx ie) endx) (!= (+ ix ie) 0))
@@ -78,27 +79,26 @@
             (assoc lex-labels index label))))
 
       ;- Gather Attentions for lexicon terms and select token relation candidates using gini coeffient
-      (setv attens (bert tensor atten))
+      (setv attens (bert tensor atten 2))
       (for [key lex-to-idx]
         (setv values (.sum (get attens 0 (get lex-to-idx key)) :dim 0)
               values (* values (get atten 0))
               selections (gini-select values)
 
               ;- Of selected tokens only append if token is part of lexicon term
-              rels-index (set (flatten (lfor k selections (if (in k idx-to-lex) (str (get idx-to-lex k)) []))))
-              rels-lex (set (flatten (lfor k selections (if (in k idx-to-lex) (get lex-labels (get idx-to-lex k)) [])))))
+
+              rels-index (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (str (get idx-to-lex k)) []))))
+              rels-lex (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (get lex-labels (get idx-to-lex k)) [])))))
         (.append df [key (.join "|" (sorted rels-index)) (.join "|" (sorted rels-lex))])))
 
     ;- Merge Bert Relation Annoations to Clever Snippet Dataframe
     (->  beacon-tagged
          (.merge (pd.DataFrame df :columns ["index" "rels_index" "rels_lex"]) :on "index" :how "outer")
+         (.fillna "")
          (.sort-values "index"))))
 
-;-
-(defn build-relator [bert-model &optional [depth 2]]
+;-  Make an interaface for the bert relations
+(defn build-relator [bert-model]
   (spec/assert :BertModel bert-model)
-  (let [bert (Attention
-              :bertrepr (BertRepr
-                         :bert (copy.deepcopy bert-model.bert)
-                         :depth depth))]
-    (fn [df] (bert-relate df bert))))
+  (let [bert (Attention :bertrepr (BertRepr :bert (copy.deepcopy bert-model.bert)))]
+    (fn [df depth] (bert-relate df bert depth))))

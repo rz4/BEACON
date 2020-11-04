@@ -12,5 +12,5 @@ setup(
     package_data={
         'beacon': ['*.hy', '*.py', 'lexicon/*.psv', 'bert/*.py', 'bert/*.hy'],
     },
-    install_requires = ["hy", "torch", "dill", "pandas", "numpy", "tqdm"],
+    install_requires = ["hy", "torch", "dill", "pandas", "numpy", "spacy", "tqdm"],
 )

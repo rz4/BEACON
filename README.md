@@ -20,18 +20,20 @@ Then import Beacon into your script like:
 from beacon import Beacon
 
 text = "Diagnosis: Patient is homeless and needs help."
-beacon = Beacon(bert_depth=3)
-annotations = beacon(text)
+beacon = Beacon()
+annotations = beacon(text, bert_depth=2)
 print(annotations)
 
 """
-index     lex startx endx        text snippet_rule  snippet_index  snippet_startx  snippet_endx                                    snippet_text rels_index          rels_lex
-0      0  HEADER      0   10  diagnosis:       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                             
-1      1   NEGEX      4    6          no       TARGET              0               0            46  diagnosis: patient is homeless and needs help.        NaN               NaN
-2      2   PUNCT      9   10           :       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                             
-3      3      PT     11   18     patient       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                             
-4      4  SNOMED     22   30    homeless       TARGET              0               0            46  diagnosis: patient is homeless and needs help.      0|3|4  HEADER|PT|SNOMED
-5      5     DOT     45   46           .       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                             
+index     lex  startx  endx        text snippet_rule  snippet_index  snippet_startx  snippet_endx                                    snippet_text rels_index      rels_lex
+0      1  HEADER       0    10  diagnosis:       TARGET              0               0            46  diagnosis: patient is homeless and needs help.          5         NSUBJ
+1      2   NEGEX       4     6          no       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                         
+2      3   PUNCT       9    10           :       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                         
+3      4      PT      11    18     patient       TARGET              0               0            46  diagnosis: patient is homeless and needs help.        1|5  HEADER|NSUBJ
+4      5   NSUBJ      11    18     patient       TARGET              0               0            46  diagnosis: patient is homeless and needs help.          1        HEADER
+5      6  SNOMED      22    30    homeless       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                         
+6      7    DOBJ      41    45        help       TARGET              0               0            46  diagnosis: patient is homeless and needs help.        5|6  NSUBJ|SNOMED
+7      8     DOT      45    46           .       TARGET              0               0            46  diagnosis: patient is homeless and needs help.                            
 """
 ```
 ## Example Scripts
