@@ -44,7 +44,7 @@
         minimum-gini gini-global]
     (for [(, i q size gini) (reversed ginis)]
       (when (and (> size 0)
-                 (>= gini 0.5)
+                 (>= gini 0.55)
                  (< gini minimum-gini))
             (setv minimum-value q
                   minimum-gini gini)))

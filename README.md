@@ -37,6 +37,6 @@ index     lex  startx  endx        text snippet_rule  snippet_index  snippet_sta
 """
 ```
 ## Example Scripts
-
+s
 - `python3 test_beacon.py` : Run BEACON on `examples/example_1.txt`
 - `python3 test_spacy.py` : Run spacy dependency feature on `examples/example_1.txt`

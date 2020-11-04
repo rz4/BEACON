@@ -14,7 +14,7 @@ if __name__ == "__main__":
 
     #- Run beacon on text
     t = time()
-    result = beacon(text, bert_depth=3)
+    result = beacon(text, bert_depth=2)
     elapsed = time() - t
 
     #- Print
