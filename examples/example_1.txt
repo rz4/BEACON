@@ -1,2 +1,3 @@
 History: Patient is not homeless, and pt currently has a home.
 HISTORY: Patient is a 24 year old woman with a history of being homeless; Pt's sister says that she is not worried about her sister's condition.
+Diagnosis: Patient is homeless and needs help.

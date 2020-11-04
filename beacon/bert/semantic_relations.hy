@@ -53,7 +53,7 @@
     (get df (> (get df "value") minimum-value) "index")))
 
 ;-- Annotate relations between lexicon terms and return a DataFrame
-(defn bert-relate [beacon-tagged bert depth threshold]
+(defn bert-relate [beacon-tagged bert depth threshold-]
 
   ;- Build dataframe of relations along each snippet
   (let [text-snippets (-> beacon-tagged (get ["snippet_index" "snippet_text" "snippet_startx"]) .drop-duplicates)
@@ -62,6 +62,11 @@
       (setv (, snippet-idx snippet-text snippet-startx) row
             snippet (get beacon-tagged (= (get beacon-tagged "snippet_index") snippet-idx))
             (, tensor atten tokens offsets) (bert-input snippet-text)
+
+            ;- Adaptive threshold based on length of tokens.
+            ;- Lower thresholds work best for shorter sequences while higher thresholds reduce
+            ;- False postive noise in longer sequences.
+            threshold (if threshold- threshold- (+ 0.25 (* 0.05 (.bit-length (len tokens)))))
 
       ;- Compile mappings between Bert Tokens and Clever lexicon terms
             idx-to-lex {}
@@ -74,7 +79,7 @@
         (for [(, i r) (enumerate offsets)]
           (setv (, ix ie) r)
           (when (and (>= (+ snippet-startx ix) startx) (<= (+ snippet-startx ie) endx) (!= (+ ix ie) 0))
-            (assoc idx-to-lex i index)
+            (if (in i idx-to-lex) (setv (get idx-to-lex i) (+ (get idx-to-lex i) [index])) (assoc idx-to-lex i [index]))
             (if (in index lex-to-idx) (setv (get lex-to-idx index) (+ (get lex-to-idx index) [i])) (assoc lex-to-idx index [i]))
             (assoc lex-labels index label))))
 
@@ -86,15 +91,21 @@
               selections (gini-select values :threshold threshold)
 
               ;- Of selected tokens only append if token is part of lexicon term
+              rels-index (lfor k selections (if (and (in k idx-to-lex))
+                                                (lfor l (get idx-to-lex k) l)
+                                                []))
+              rels-lex (lfor k selections (if (and (in k idx-to-lex))
+                                              (lfor l (get idx-to-lex k) (get lex-labels l))
+                                              [])))
+        (.append df [key
+                     threshold
+                     (.join "|" (lfor x (sorted (set (flatten rels-index))) (str x)))
+                     (.join "|" (sorted (set (flatten rels-lex))))])))
 
-              rels-index (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (get idx-to-lex k) []))))
-              rels-lex (set (flatten (lfor k selections (if (and (in k idx-to-lex) (!= (get idx-to-lex k) key)) (get lex-labels (get idx-to-lex k)) [])))))
-        (.append df [key (.join "|" (lfor x (sorted rels-index) (str x))) 
-                         (.join "|" (sorted rels-lex))])))
 
     ;- Merge Bert Relation Annoations to Clever Snippet Dataframe
     (->  beacon-tagged
-         (.merge (pd.DataFrame df :columns ["index" "rels_index" "rels_lex"]) :on "index" :how "outer")
+         (.merge (pd.DataFrame df :columns ["index" "rels_threshold" "rels_index" "rels_lex"]) :on "index" :how "outer")
          (.fillna "")
          (.sort-values "index"))))
 

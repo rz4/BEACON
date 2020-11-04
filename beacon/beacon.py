@@ -82,7 +82,7 @@ class Beacon(object):
     self._lex_mapping = dict([(key, BASE58[i]) for (i, key) in enumerate(lexs)]) # Build lex to symbol mapping
     self._snippet_rules = dict([(key, self._build_rule(self.rules[key])) for key in self.rules])
 
-  def __call__(self, text, bert_depth=2, return_snippet_text=True, bert_threshold=0.55):
+  def __call__(self, text, bert_depth=2, bert_threshold=None, return_snippet_text=True):
     preprocessed_text = self._preprocess(text) # First preprocess text
     tagged_text = self._tag_nounchunks(preprocessed_text)
     tagged_text = self._tag_by_lexicon(preprocessed_text, tagged_text) # Then tag lexs over text
