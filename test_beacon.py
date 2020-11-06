@@ -12,11 +12,11 @@ if __name__ == "__main__":
         text = f.read()
 
     #- Instantiate Beacon
-    beacon = Beacon()#bert_model_path="lexicons/cori/pretrained_allmimic.pickle")
+    beacon = Beacon()#)bert_model_path="lexicons/cori/pretrained_allmimic.pickle")
 
     #- Run beacon on text
     t = time()
-    result = beacon(text, bert_depth=2)
+    result = beacon(text, bert_depth=3)# bert_threshold=0.5)
     elapsed = time() - t
 
     #- Print

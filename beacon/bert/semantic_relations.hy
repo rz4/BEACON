@@ -5,7 +5,7 @@
          [hy.contrib.walk [let]])
 
 ;-
-(import copy
+(import copy torch
         [numpy :as np]
         [pandas :as pd]
         [beacon.bert.io [bert-input]]
@@ -70,7 +70,6 @@
                                                              [(< (len tokens) 25) 0.1]
                                                              [True 0.15])))
 
-
       ;- Compile mappings between Bert Tokens and Clever lexicon terms
             idx-to-lex {}
             lex-to-idx {}
@@ -78,7 +77,7 @@
 
       (for [(, _ lex) (.iterrows (get snippet ["index" "lex" "startx" "endx"]))]
         (setv (, index label startx endx) lex)
-        (when (in label ["DOT" "PUNCT"]) (continue))
+        (when (in label ["DOT" "PUNCT" "HEADER"]) (continue))
         (for [(, i r) (enumerate offsets)]
           (setv (, ix ie) r)
           (when (and (>= (+ snippet-startx ix) startx) (<= (+ snippet-startx ie) endx) (!= (+ ix ie) 0))
@@ -87,7 +86,7 @@
             (assoc lex-labels index label))))
 
       ;- Gather Attentions for lexicon terms and select token relation candidates using gini coeffient
-      (setv attens (bert tensor atten 2))
+      (setv attens (bert tensor atten depth))
       (for [key lex-to-idx]
         (setv values (.sum (get attens 0 (get lex-to-idx key)) :dim 0)
               values (* values (get atten 0))
