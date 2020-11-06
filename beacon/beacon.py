@@ -78,7 +78,7 @@ class Beacon(object):
 
     #- Compile search regexes at object intialization to improve performance
     self._lexicon_regexs = dict([(grpn, self._build_regex(x["string"])) for (grpn, x) in self.lexicon.groupby("lex")])
-    lexs = list(self._lexicon_regexs.keys()) + ["NSUBJ", "DOBJ", "POBJ", "ATTR", "ROOT"]
+    lexs = list(self._lexicon_regexs.keys()) + ["NSUBJ", "DOBJ", "POBJ", "ATTR", "ROOT", "CONJ", "NSUBJPASS", "APPOS"]
     self._lex_mapping = dict([(key, BASE58[i]) for (i, key) in enumerate(lexs)]) # Build lex to symbol mapping
     self._snippet_rules = dict([(key, self._build_rule(self.rules[key])) for key in self.rules])
 
@@ -91,7 +91,7 @@ class Beacon(object):
     out = kg_annotated if kg_annotated is not None else pd.DataFrame([], columns=["index", "rels_index", "rels_lex",
                                                                                   "lex","startx","endx","text", "snippet_rule","snippet_regex",
                                                                                   "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])
-    out = out if return_snippet_text else out.drop("snippet_text")
+    out = out if return_snippet_text else out.drop(columns=["snippet_text"])
     return out
 
   #- FUTURE: Standardize Lexicon and Headers file type. (i.e csv, parquet, etc).

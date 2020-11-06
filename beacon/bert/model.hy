@@ -17,9 +17,12 @@
 ;-- Read a standard BERT architecture and model weights if provided.
 (defn read-bert [&optional [file None]]
   (let [model (BertForMaskedLM.from_pretrained "bert-base-uncased")]
-    (when file (-> (torch.load file :map_location (torch.device "cpu"))
-                   (get "model_state_dict")
-                   (->> (.load-state-dict model))))
+    (when file
+      (setv model2 (nn.DataParallel (BertForMaskedLM model.config)))
+      (-> (torch.load file :map_location (torch.device "cpu"))
+          (get "model_state_dict")
+          (->> (.load-state-dict model2)))
+      (setv model model2.module))
     (.eval model)))
 
 ;-- Data specification

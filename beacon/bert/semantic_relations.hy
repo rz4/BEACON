@@ -24,7 +24,7 @@
     (/ (np.sum (* array (- (* 2 index) n 1))) (* n (np.sum array)))))
 
 ;--
-(defn gini-select [values &optional [intervals 100] [threshold 0.55]]
+(defn gini-select [values &optional [intervals 100] [threshold 0.5]]
 
   ;- Remove padding tokens and max/min normalize values
   (setv values (-> values .detach .numpy)
@@ -66,7 +66,10 @@
             ;- Adaptive threshold based on length of tokens.
             ;- Lower thresholds work best for shorter sequences while higher thresholds reduce
             ;- False postive noise in longer sequences.
-            threshold (if threshold- threshold- (+ 0.25 (* 0.05 (.bit-length (len tokens)))))
+            threshold (if threshold- threshold- (+ 0.4 (cond [(< (len tokens) 17) 0.05]
+                                                             [(< (len tokens) 25) 0.1]
+                                                             [True 0.15])))
+
 
       ;- Compile mappings between Bert Tokens and Clever lexicon terms
             idx-to-lex {}
@@ -92,10 +95,10 @@
 
               ;- Of selected tokens only append if token is part of lexicon term
               rels-index (lfor k selections (if (and (in k idx-to-lex))
-                                                (lfor l (get idx-to-lex k) l)
+                                                (lfor l (get idx-to-lex k) (if (= l key) [] l))
                                                 []))
               rels-lex (lfor k selections (if (and (in k idx-to-lex))
-                                              (lfor l (get idx-to-lex k) (get lex-labels l))
+                                              (lfor l (get idx-to-lex k) (if (= l key) [] (get lex-labels l)))
                                               [])))
         (.append df [key
                      threshold

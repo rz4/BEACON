@@ -1,6 +1,8 @@
 #-
 from time import time
 from beacon import Beacon
+import pandas as pd
+pd.set_option("display.max_rows", 300)
 
 #- Main
 if __name__ == "__main__":
@@ -10,7 +12,7 @@ if __name__ == "__main__":
         text = f.read()
 
     #- Instantiate Beacon
-    beacon = Beacon()
+    beacon = Beacon()#bert_model_path="lexicons/cori/pretrained_allmimic.pickle")
 
     #- Run beacon on text
     t = time()
@@ -18,6 +20,6 @@ if __name__ == "__main__":
     elapsed = time() - t
 
     #- Print
-    print(result)
+    print(result.drop(columns=["snippet_text"]))
     print(result["snippet_text"].unique())
     print("Computed in (sec): {}".format(elapsed))
