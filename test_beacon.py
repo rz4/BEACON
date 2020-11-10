@@ -4,6 +4,11 @@ from beacon import Beacon
 import pandas as pd
 pd.set_option("display.max_rows", 300)
 
+#-
+import matplotlib.pyplot as plt
+import networkx as nx
+from beacon.bert.semantic_relations import compile_DG
+
 #- Main
 if __name__ == "__main__":
 
@@ -16,17 +21,21 @@ if __name__ == "__main__":
 
     #- Run beacon on text
     t = time()
-    result = beacon(text, bert_depth=4)#, bert_threshold=0.55)
+    result = beacon(text)
     elapsed = time() - t
 
-    #- Print
+    #- Print Annotations
     print(result.drop(columns=["snippet_text"]))
     print(result["snippet_text"].unique())
     print("Computed in (sec): {}".format(elapsed))
 
-    #-
-    import matplotlib.pyplot as plt
-    import networkx as nx
-    G = beacon.entity_graph(result[result["snippet_index"]==0])
-    nx.draw(G, labels=nx.get_node_attributes(G, 'concept'), font_weight='bold', font_size=8, arrow_size=15, node_size=8000, pos=nx.shell_layout(G,nlist=[[3],[i for i in range(3,16) if i not in [3,4, 10]]]))
+    #- Draw Directed Dependency Graph
+    G = compile_DG(result)
+    nx.draw(G,
+            labels=nx.get_node_attributes(G, 'concept'),
+            font_weight='bold',
+            font_size=8,
+            arrow_size=15,
+            node_size=8000,
+            pos=nx.shell_layout(G,nlist=[[3],[i for i in range(4,16)]]))
     plt.show()

@@ -3,7 +3,7 @@ import os, re, hy
 import pandas as pd
 import spacy
 from beacon.bert.model import read_bert
-from beacon.bert.semantic_relations import build_relator, compile_network
+from beacon.bert.semantic_relations import build_relator
 
 #- For Mapping Lexs to Unique Characters (LIMIT 58 unique Lexs)
 BASE58 = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -84,7 +84,7 @@ class Beacon(object):
     self._lex_mapping = dict([(key, BASE58[i]) for (i, key) in enumerate(lexs)]) # Build lex to symbol mapping
     self._snippet_rules = dict([(key, self._build_rule(self.rules[key])) for key in self.rules])
 
-  def __call__(self, text, bert_depth=2, bert_threshold=None, return_snippet_text=True):
+  def __call__(self, text, bert_depth=4, bert_threshold=None, return_snippet_text=True):
     preprocessed_text = self._preprocess(text) # First preprocess text
     tagged_text = self._tag_nounchunks(preprocessed_text)
     tagged_text = self._tag_by_lexicon(preprocessed_text, tagged_text) # Then tag lexs over text
@@ -95,11 +95,6 @@ class Beacon(object):
                                                                                   "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])
     out = out if return_snippet_text else out.drop(columns=["snippet_text"])
     return out
-
-  def entity_graph(self, annotations):
-    """
-    """
-    return compile_network(annotations)
 
   #- FUTURE: Standardize Lexicon and Headers file type. (i.e csv, parquet, etc).
   def _read_lexicon(self, path):

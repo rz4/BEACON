@@ -119,17 +119,16 @@
   (let [bert (Attention :bertrepr (BertRepr :bert (copy.deepcopy bert-model.bert)))]
     (fn [df depth threshold] (bert-relate df bert depth threshold))))
 
-;-
-(defn compile-network [df]
+;- Build a directed graph from annotation dataframe
+(defn compile-DG [df &optional [merge-on (fn [x] (= (get x "lex") "PT"))]]
+
   ;- Split relations for entitys
   (let [df (get df (!= (get df "rels_depth") ""))
-
         G (nx.DiGraph)]
     (setv (get df "node") (get df "index")
           (get df "edge") (.split (. (get df "rels_index") str) "|")
           df (.explode df "edge")
           df (get df ["node" "edge" "lex" "text"]))
-          ;df (get df (~ (.isin (get df "edge") (lfor e (.unique (get df (= (get df "lex") "PT") "node")) (str e))))))
 
     ;- Gather nodes and edges
     (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text"])) (, (get row 0) {"concept" (.format "{}:{}:{}" (get row 0) (get row 1) (get row 2))}))
@@ -137,11 +136,11 @@
       (.add-nodes-from G nodes)
       (.add-edges-from G pairs))
 
-    ;- Reduce Patient Nodes
-    (let [pts (= (get df "lex") "PT")
-          patient-nodes (get df (.isin (get df "text") (get df pts "text")) "node")
-          patient-nodes (list (.unique (.append patient-nodes (get df pts "node"))))
-          start (first patient-nodes)]
-      (for [i (rest patient-nodes)] (setv G (nx.contracted_nodes G start i :self_loops False))))
+    ;- Reduce Nodes
+    (let [mask (.apply (get df ["lex" "text"]) merge-on 1)
+          merged (get df (.isin (get df "text") (get df mask "text")) "node")
+          merged (list (.unique (.append merged (get df mask "node"))))
+          start (first merged)]
+      (for [i (rest merged)] (setv G (nx.contracted_nodes G start i :self_loops False))))
 
     G))
