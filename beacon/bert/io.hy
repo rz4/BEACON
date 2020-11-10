@@ -16,7 +16,7 @@
       """
       (let [tokenized-dict (tokenizer.encode-plus x
                                                   :add-special-tokens True
-                                                  :max_length (if nb-tokens nb-tokens 64)
+                                                  :max_length (if nb-tokens nb-tokens 128)
                                                   :truncation True
                                                   :pad-to-max-length (if nb-tokens True False)
                                                   :return-attention-mask True

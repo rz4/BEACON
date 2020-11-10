@@ -3,7 +3,7 @@ import os, re, hy
 import pandas as pd
 import spacy
 from beacon.bert.model import read_bert
-from beacon.bert.semantic_relations import build_relator
+from beacon.bert.semantic_relations import build_relator, compile_network
 
 #- For Mapping Lexs to Unique Characters (LIMIT 58 unique Lexs)
 BASE58 = '123456789abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ'
@@ -21,7 +21,9 @@ class Beacon(object):
   beacon(text::str) ->  df::pd.DataFrame
 
   With dataframe columns:
-    ["index" "rels_index" "rels_lex","lex","startx","endx","text", "snippet_rule","snippet_regex","snippet_matchx","snippet_startx","snippet_endx","snippet_text"]
+    ["index", "rels_depth", "rels_threshold", "rels_index", "rels_lex",
+     "lex","startx","endx","text", "snippet_rule",
+     "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])
 
   For every passed text string, this Clever implementation outputs a dataframe
   with the above specification. If no matches are found, an empty dataframe that
@@ -88,11 +90,16 @@ class Beacon(object):
     tagged_text = self._tag_by_lexicon(preprocessed_text, tagged_text) # Then tag lexs over text
     snippets = self._snip_by_rules(preprocessed_text, tagged_text) if tagged_text is not None else None # Finally match on snippet patterns
     kg_annotated = self.bert_relate(snippets, bert_depth, bert_threshold) if snippets is not None else None # Annonate tag relations using BERT
-    out = kg_annotated if kg_annotated is not None else pd.DataFrame([], columns=["index", "rels_index", "rels_lex",
-                                                                                  "lex","startx","endx","text", "snippet_rule","snippet_regex",
+    out = kg_annotated if kg_annotated is not None else pd.DataFrame([], columns=["index", "rels_depth", "rels_threshold", "rels_index", "rels_lex",
+                                                                                  "lex","startx","endx","text", "snippet_rule",
                                                                                   "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])
     out = out if return_snippet_text else out.drop(columns=["snippet_text"])
     return out
+
+  def entity_graph(self, annotations):
+    """
+    """
+    return compile_network(annotations)
 
   #- FUTURE: Standardize Lexicon and Headers file type. (i.e csv, parquet, etc).
   def _read_lexicon(self, path):
@@ -115,6 +122,7 @@ class Beacon(object):
     """
     series = [re.sub(r'([^0-9a-zA-Z\s])', r'\\\1', x) for x in list(series)] # Add forward slash to non-alphanumeric characters
     series = [x.replace(" ", "\s") for x in series] # Change spaces to arbitrary whitespace character.
+    series = sorted(series, key=len, reverse=True)
     regex = r"|".join(["({})".format(s) if s.startswith("\\") else "({})".format(s) for s in series]) # Join terms and encapsulate each with grouping parenthesis to keep term on splits
     return re.compile(regex)
 
@@ -136,7 +144,8 @@ class Beacon(object):
 
   def _tag_nounchunks(self, text):
     """ """
-    df = [[chunk.root.dep_.upper(), chunk.start_char, chunk.end_char, chunk.text] for chunk in self.spacy_nlp(text).noun_chunks]
+    doc =  self.spacy_nlp(text)
+    df = [[chunk.root.dep_.upper(), chunk.start_char, chunk.end_char, chunk.text] for chunk in doc.noun_chunks]
     return pd.DataFrame(df, columns=["lex", "startx", "endx", "text"])
 
   def _tag_by_lexicon(self, text, tags=None):
@@ -144,6 +153,7 @@ class Beacon(object):
     dfs = [self._match_on_regex(text, key) for key in self._lexicon_regexs]
     dfs = pd.concat(dfs)
     dfs = dfs.append(tags) if tags is not None else dfs
+    dfs["text"] = dfs["text"].apply(lambda x: x.strip())
     return dfs.sort_values("endx",ascending=True).sort_values("startx").reset_index(drop=True).reset_index() if len(dfs) > 0 else None
 
   def _match_on_rule(self, text, tagged_df, key):

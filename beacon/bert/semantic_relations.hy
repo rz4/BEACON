@@ -6,6 +6,7 @@
 
 ;-
 (import copy torch
+        [networkx :as nx]
         [numpy :as np]
         [pandas :as pd]
         [beacon.bert.io [bert-input]]
@@ -100,6 +101,7 @@
                                               (lfor l (get idx-to-lex k) (if (= l key) [] (get lex-labels l)))
                                               [])))
         (.append df [key
+                     depth
                      threshold
                      (.join "|" (lfor x (sorted (set (flatten rels-index))) (str x)))
                      (.join "|" (sorted (set (flatten rels-lex))))])))
@@ -107,7 +109,7 @@
 
     ;- Merge Bert Relation Annoations to Clever Snippet Dataframe
     (->  beacon-tagged
-         (.merge (pd.DataFrame df :columns ["index" "rels_threshold" "rels_index" "rels_lex"]) :on "index" :how "outer")
+         (.merge (pd.DataFrame df :columns ["index" "rels_depth" "rels_threshold" "rels_index" "rels_lex"]) :on "index" :how "outer")
          (.fillna "")
          (.sort-values "index"))))
 
@@ -116,3 +118,30 @@
   (spec/assert :BertModel bert-model)
   (let [bert (Attention :bertrepr (BertRepr :bert (copy.deepcopy bert-model.bert)))]
     (fn [df depth threshold] (bert-relate df bert depth threshold))))
+
+;-
+(defn compile-network [df]
+  ;- Split relations for entitys
+  (let [df (get df (!= (get df "rels_depth") ""))
+
+        G (nx.DiGraph)]
+    (setv (get df "node") (get df "index")
+          (get df "edge") (.split (. (get df "rels_index") str) "|")
+          df (.explode df "edge")
+          df (get df ["node" "edge" "lex" "text"]))
+          ;df (get df (~ (.isin (get df "edge") (lfor e (.unique (get df (= (get df "lex") "PT") "node")) (str e))))))
+
+    ;- Gather nodes and edges
+    (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text"])) (, (get row 0) {"concept" (.format "{}:{}:{}" (get row 0) (get row 1) (get row 2))}))
+          pairs (lfor (, i row) (.iterrows (get (get df (!= (get df "edge") "")) ["node" "edge"])) (if (, (get row 0) (int (get row 1)))))]
+      (.add-nodes-from G nodes)
+      (.add-edges-from G pairs))
+
+    ;- Reduce Patient Nodes
+    (let [pts (= (get df "lex") "PT")
+          patient-nodes (get df (.isin (get df "text") (get df pts "text")) "node")
+          patient-nodes (list (.unique (.append patient-nodes (get df pts "node"))))
+          start (first patient-nodes)]
+      (for [i (rest patient-nodes)] (setv G (nx.contracted_nodes G start i :self_loops False))))
+
+    G))
