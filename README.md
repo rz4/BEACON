@@ -40,3 +40,9 @@ index     lex  startx  endx        text snippet_rule  snippet_index  snippet_sta
 
 - `python3 test_beacon.py` : Run BEACON on `examples/example_1.txt`
 - `python3 test_spacy.py` : Run spacy dependency feature on `examples/example_1.txt`
+
+### Example: 1 Knowledge Graph For Snippet 3
+
+>> Summary: Patient with significant depression since January; April of this year pt and wife sought counseling for sleep issue with children; x 2 sessions; No assaultive or suicidal behavior.
+
+![graph](artifacts/example_1_2.png)
