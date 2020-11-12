@@ -212,13 +212,13 @@ cui|string|lex
 |history|HX
 |history of|HX
 |a history of|HX
-|ho\s|HX
+|ho |HX
 |hx|HX
 |past|HX
 |has had|HX
 |patient history|HX
 |not|NEGEX
-| no |NEGEX
+|no|NEGEX
 |strongly argues against|NEGEX
 |(-)|NEGEX
 |absence of|NEGEX
@@ -405,7 +405,7 @@ cui|string|lex
 |ought to be ruled out for|NEGEX
 |patient was not|NEGEX
 |r/o|NEGEX
-|ro\s|NEGEX
+|ro |NEGEX
 |rule her out|NEGEX
 |rule her out for|NEGEX
 |rule him out|NEGEX

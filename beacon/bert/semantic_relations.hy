@@ -123,7 +123,7 @@
 (defn compile-DG [df &optional [merge-on (fn [x] (= (get x "lex") "PT"))]]
 
   ;- Split relations for entitys
-  (let [df (get df (!= (get df "rels_depth") ""))
+  (let [df (get df (!= (get df "rels_depth") "")) ; Remove unconnected nodes
         G (nx.DiGraph)]
     (setv (get df "node") (get df "index")
           (get df "edge") (.split (. (get df "rels_index") str) "|")
@@ -131,8 +131,12 @@
           df (get df ["node" "edge" "lex" "text"]))
 
     ;- Gather nodes and edges
-    (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text"])) (, (get row 0) {"concept" (.format "{}:{}:{}" (get row 0) (get row 1) (get row 2))}))
-          pairs (lfor (, i row) (.iterrows (get (get df (!= (get df "edge") "")) ["node" "edge"])) (if (, (get row 0) (int (get row 1)))))]
+    (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text"]))
+                      (, (get row 0) {"index" (get row 0)
+                                      "lex" (get row 1)
+                                      "text" (get row 2)}))
+          pairs (lfor (, i row) (.iterrows (get (get df (!= (get df "edge") "")) ["node" "edge"]))
+                      (, (get row 0) (int (get row 1))))]
       (.add-nodes-from G nodes)
       (.add-edges-from G pairs))
 
@@ -141,6 +145,20 @@
           merged (get df (.isin (get df "text") (get df mask "text")) "node")
           merged (list (.unique (.append merged (get df mask "node"))))
           start (first merged)]
-      (for [i (rest merged)] (setv G (nx.contracted_nodes G start i :self_loops False))))
+      (for [i (rest merged)] (setv G (nx.contracted_nodes G start i :self_loops False)))
+      (let [cores (nx.core_number G)
+            ranks (nx.pagerank G)]
+        (nx.set_node_attributes G cores "core")
+        (nx.set_node_attributes G ranks "pagerank"))
 
-    G))
+      (, G start))))
+
+;-
+(defn find-simplest-paths [G root start end]
+  (let [paths []]
+    (for [p (nx.all_simple_paths G start end)]
+      (if (and (in start root) (in end root))
+          (.append paths p)
+          (unless (eval `(or ~@(flatten (lfor r root (in r p)))))
+                  (.append paths p))))
+    (list (set (flatten paths)))))

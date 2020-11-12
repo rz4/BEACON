@@ -1,4 +1,3 @@
 History: Patient is not homeless, and pt currently has a home.
-HISTORY: Patient is a 24 year old woman with history of being homeless; Pt's sister says that she is not worried about her sister's condition.
 Diagnosis: Patient is homeless and needs help.
-Summary: Patient with significant depression since [**Month (only) 205**]; [**Month (only) 404**] of this year pt and wife sought counseling for sleep issue with children; x 2 sessions; No assaultive or suicidal behavior.
+Summary: Patient with significant depression since January; April of this year pt and wife sought counseling for sleep issue with children; x 2 sessions; No assaultive or suicidal behavior.

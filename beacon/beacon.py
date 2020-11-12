@@ -93,6 +93,7 @@ class Beacon(object):
     out = kg_annotated if kg_annotated is not None else pd.DataFrame([], columns=["index", "rels_depth", "rels_threshold", "rels_index", "rels_lex",
                                                                                   "lex","startx","endx","text", "snippet_rule",
                                                                                   "snippet_matchx","snippet_startx","snippet_endx","snippet_text"])
+    out["text"] = out["text"].apply(lambda x: x.strip())
     out = out if return_snippet_text else out.drop(columns=["snippet_text"])
     return out
 
@@ -168,7 +169,6 @@ class Beacon(object):
       df["snippet_endx"] = ex
       df["snippet_text"] = text[sx:ex]
       out.append(df)
-
     return pd.concat(out) if len(out) > 0 else None
 
   def _snip_by_rules(self, text, tagged_df):

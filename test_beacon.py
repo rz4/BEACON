@@ -7,13 +7,14 @@ pd.set_option("display.max_rows", 300)
 #-
 import matplotlib.pyplot as plt
 import networkx as nx
-from beacon.bert.semantic_relations import compile_DG
+from beacon.bert.semantic_relations import compile_DG, find_simplest_paths
+from beacon.vis import display_KG
 
 #- Main
 if __name__ == "__main__":
 
     #- Load Text Example
-    with open("examples/example_3.txt", "r") as f:
+    with open("examples/example_1.txt", "r") as f:
         text = f.read()
 
     #- Instantiate Beacon
@@ -21,7 +22,9 @@ if __name__ == "__main__":
 
     #- Run beacon on text
     t = time()
-    result = beacon(text)
+    result = beacon(text,
+                    bert_depth=3, # Number of Attention Layers to use; Shorter text typically need less layers
+                    bert_threshold=0.6) # Energy threshold for building relations; Higher values means more strict selection.
     elapsed = time() - t
 
     #- Print Annotations
@@ -30,12 +33,5 @@ if __name__ == "__main__":
     print("Computed in (sec): {}".format(elapsed))
 
     #- Draw Directed Dependency Graph
-    G = compile_DG(result)
-    nx.draw(G,
-            labels=nx.get_node_attributes(G, 'concept'),
-            font_weight='bold',
-            font_size=8,
-            arrow_size=15,
-            node_size=8000,
-            pos=nx.shell_layout(G,nlist=[[3],[i for i in range(4,16)]]))
-    plt.show()
+    G, root = compile_DG(result[result["snippet_index"]==2])
+    display_KG(G)
