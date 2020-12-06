@@ -1,9 +1,13 @@
+![graph](artifacts/beacon.png)
 # BEACON
+
 BERT Extracted Attention for Clinical Ontology aNnotation
 
 # Overview
-An exploration of building concept relations within clinical text
-through the use of pretrained BERT models.
+An exploration of building queriable concept relations from clinical text
+through the use of pretrained BERT models and graph analysis.
+
+> This project is under active development and will change frequently.
 
 ## Getting Started
 
@@ -79,10 +83,10 @@ if __name__ == "__main__":
 
 ### Example 1: Building Facts w.r.t Homelessness From Medical Text
 
-This section shows how BEACON can be used to derive targeted facts about the patient and a selected medical concept
-given an expert derived vocabulary and out-of-the-box pretrained BERT language model from HuggingFace.
-We are able to extract predicate rules which can be explored with the help of logic programming to
-reduce the ambiguity of relations between vocabulary terms.
+This section shows how BEACON can be used to derive targeted facts about the patient and
+a selected medical concept given an expert derived vocabulary and an out-of-the-box pretrained BERT language
+model from HuggingFace. We are able to extract predicate rules which can be explored with the help of logic
+programming to reduce the ambiguity of relations between vocabulary terms.
 
 >> NEURO: A+OX3. +MAE noted. CIWA scale <10 and no prn valium required this shift. No tremors, diaphoresis or hallucinations noted.
 CV: Monitor shows SB-NSR with occ pacs noted.
