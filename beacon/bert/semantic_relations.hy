@@ -5,17 +5,16 @@
          [hy.contrib.walk [let]])
 
 ;-
-(import copy torch
+(import copy torch os
         [networkx :as nx]
         [numpy :as np]
         [pandas :as pd]
-        [beacon.bert.io [bert-input]]
-        [beacon.bert.model [BertRepr]])
+        [beacon.bert.bert_io [bert-input]]
+        [beacon.bert.bert-model [BertRepr]])
 
-;--
-(defmu Attention [x atten depth bertrepr]
-  (setv (, hiddens attens) (bertrepr x atten depth))
-  attens)
+;- STATICS
+(setv NTAGS ["NSUBJ" "DOBJ" "POBJ" "ATTR" "CONJ" "NSUBJPASS" "CSUBJ" "COMPOUND"]
+      PROLOG-TEMPLATE (with [f (open (+ (os.path.dirname (os.path.abspath __file__)) "/beacon_rules.swi") "r")] (f.read)))
 
 ;--
 (defn gini-score [x]
@@ -42,19 +41,23 @@
 
   ;- Dynamic Programming Method: Search for split along percentiles where gini coeffient falls under 0.5 or rebounds
   (let [minimum-value 1.0
-        minimum-gini gini-global]
+        minimum-gini 1.0]
     (for [(, i q size gini) (reversed ginis)]
-      (when (and (> size 0)
-                 (>= gini threshold)
-                 (< gini minimum-gini))
-            (setv minimum-value q
-                  minimum-gini gini)))
+      (if (and (> size 0)
+               (> gini gini-global))
+          (setv minimum-value q
+                minimum-gini gini)
+          (if (and (>= gini threshold)
+                   (<= gini minimum-gini))
+              (setv minimum-value q
+                    minimum-gini gini)
+              (break))))
 
     ;- Return Token Indexes
     (get df (> (get df "value") minimum-value) "index")))
 
 ;-- Annotate relations between lexicon terms and return a DataFrame
-(defn bert-relate [beacon-tagged bert depth threshold-]
+(defn bert-relate [beacon-tagged bert layers threshold-]
 
   ;- Build dataframe of relations along each snippet
   (let [text-snippets (-> beacon-tagged (get ["snippet_index" "snippet_text" "snippet_startx"]) .drop-duplicates)
@@ -67,9 +70,12 @@
             ;- Adaptive threshold based on length of tokens.
             ;- Lower thresholds work best for shorter sequences while higher thresholds reduce
             ;- False postive noise in longer sequences.
-            threshold (if threshold- threshold- (+ 0.4 (cond [(< (len tokens) 17) 0.05]
-                                                             [(< (len tokens) 25) 0.1]
-                                                             [True 0.15])))
+            threshold (if threshold- threshold- (+ 0.4 (cond
+                                                             [(< (len tokens) 50) 0.025]
+                                                             [(< (len tokens) 80) 0.05]
+                                                             [(< (len tokens) 100) 0.1]
+                                                             [(< (len tokens) 150) 0.15]
+                                                             [True 0.25])))
 
       ;- Compile mappings between Bert Tokens and Clever lexicon terms
             idx-to-lex {}
@@ -78,7 +84,7 @@
 
       (for [(, _ lex) (.iterrows (get snippet ["index" "lex" "startx" "endx"]))]
         (setv (, index label startx endx) lex)
-        (when (in label ["DOT" "PUNCT" "HEADER"]) (continue))
+        (when (or (in "HEADER" label)) (continue))
         (for [(, i r) (enumerate offsets)]
           (setv (, ix ie) r)
           (when (and (>= (+ snippet-startx ix) startx) (<= (+ snippet-startx ie) endx) (!= (+ ix ie) 0))
@@ -87,7 +93,7 @@
             (assoc lex-labels index label))))
 
       ;- Gather Attentions for lexicon terms and select token relation candidates using gini coeffient
-      (setv attens (bert tensor atten depth))
+      (setv attens (last (bert tensor atten (get layers 0) (get layers 1))))
       (for [key lex-to-idx]
         (setv values (.sum (get attens 0 (get lex-to-idx key)) :dim 0)
               values (* values (get atten 0))
@@ -101,40 +107,42 @@
                                               (lfor l (get idx-to-lex k) (if (= l key) [] (get lex-labels l)))
                                               [])))
         (.append df [key
-                     depth
+                     (.join "|" (lfor x layers (str x)))
                      threshold
                      (.join "|" (lfor x (sorted (set (flatten rels-index))) (str x)))
-                     (.join "|" (sorted (set (flatten rels-lex))))])))
-
+                     (.join "|" (sorted (set (flatten (lfor x (flatten rels-lex) (.split x "|"))))))
+                     (len tokens)])))
 
     ;- Merge Bert Relation Annoations to Clever Snippet Dataframe
     (->  beacon-tagged
-         (.merge (pd.DataFrame df :columns ["index" "rels_depth" "rels_threshold" "rels_index" "rels_lex"]) :on "index" :how "outer")
+         (.merge (pd.DataFrame df :columns ["index" "rels_layers" "rels_threshold" "rels_index" "rels_lex" "rels_tokens"]) :on "index" :how "outer")
          (.fillna "")
          (.sort-values "index"))))
 
 ;-  Make an interaface for the bert relations
 (defn build-relator [bert-model]
   (spec/assert :BertModel bert-model)
-  (let [bert (Attention :bertrepr (BertRepr :bert (copy.deepcopy bert-model.bert)))]
-    (fn [df depth threshold] (bert-relate df bert depth threshold))))
+  (let [bert (BertRepr :bert (copy.deepcopy bert-model.bert))]
+    (fn [df layers threshold] (bert-relate df bert layers threshold))))
 
 ;- Build a directed graph from annotation dataframe
-(defn compile-DG [df &optional [merge-on (fn [x] (= (get x "lex") "PT"))]]
+(defn compile-DG [df &optional [merge-on (fn [x] (in "PT" (get x "lex")))]]
 
   ;- Split relations for entitys
-  (let [df (get df (!= (get df "rels_depth") "")) ; Remove unconnected nodes
+  (let [df (get df (!= (get df "rels_layers") "")) ; Remove unconnected nodes
         G (nx.DiGraph)]
     (setv (get df "node") (get df "index")
           (get df "edge") (.split (. (get df "rels_index") str) "|")
           df (.explode df "edge")
-          df (get df ["node" "edge" "lex" "text"]))
+          df (get df ["node" "edge" "lex" "text" "startx" "endx"]))
 
     ;- Gather nodes and edges
-    (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text"]))
+    (let [nodes (lfor (, i row) (.iterrows (get df ["node" "lex" "text" "startx" "endx"]))
                       (, (get row 0) {"index" (get row 0)
                                       "lex" (get row 1)
-                                      "text" (get row 2)}))
+                                      "text" (get row 2)
+                                      "startx" (get row 3)
+                                      "endx" (get row 4)}))
           pairs (lfor (, i row) (.iterrows (get (get df (!= (get df "edge") "")) ["node" "edge"]))
                       (, (get row 0) (int (get row 1))))]
       (.add-nodes-from G nodes)
@@ -151,14 +159,131 @@
         (nx.set_node_attributes G cores "core")
         (nx.set_node_attributes G ranks "pagerank"))
 
-      (, G start))))
+      (, G (int start)))))
 
 ;-
-(defn find-simplest-paths [G root start end]
-  (let [paths []]
-    (for [p (nx.all_simple_paths G start end)]
-      (if (and (in start root) (in end root))
-          (.append paths p)
-          (unless (eval `(or ~@(flatten (lfor r root (in r p)))))
-                  (.append paths p))))
-    (list (set (flatten paths)))))
+(defn has-shortest-path-of-length [G start end length]
+  (and (in start G)
+       (in end G)
+       (nx.has-path G start end)
+       (< (len (nx.shortest-path G start end)) length)))
+
+;-
+(defn compile-prolog [tags graph pt]
+  ;-
+  (let [objs (-> tags (get (.contains (. (get tags "lex") str) (.join "|" NTAGS)) "index")  .to-list)
+        roots (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "ROOT"))) "index") .to-list)
+        concepts (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "UMLS"))) "index") .to-list)
+        fams (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "FAM"))) "index") .to-list)
+        caretakers (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "CG"))) "index") .to-list)
+        hxs (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "HX"))) "index") .to-list)
+        rxs (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "RISK"))) "index") .to-list)
+        negexs (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "NEGEX"))) "index") .to-list)
+        dots (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "DOT"))) "index") .to-list)
+        puncts (-> tags (get (.contains (. (get tags "lex") str) (.join "|" (, "PUNCT"))) "index") .to-list)
+        objs (flatten (lfor x objs (if (in x (+ [pt] fams caretakers)) [] x)))
+        impassables (+ [pt] objs dots puncts roots)
+        graph1 (flatten (lfor x (.nodes graph) (if (in x objs) [] x)))
+        graph1 (.subgraph graph graph1)
+        graph2 (flatten (lfor x (.nodes graph) (if (in x impassables) [] x)))
+        graph2 (.subgraph graph graph2)
+        script ""
+        jumps 5
+        nodes []]
+
+    ;-
+    (for [node (+ [pt] concepts fams hxs negexs)])
+    (+= script (.format "patient({}).\n" pt))
+
+    ;-
+    (for [concept concepts]
+      (if (has-shortest-path-of-length graph1 pt concept jumps)
+          (do (setv path (nx.shortest-path graph1 pt concept)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "dx({}, {}, [{}]).\n" pt concept path))
+              (+= nodes (+ path- [concept pt])))
+          (when (has-shortest-path-of-length graph1 concept pt jumps)
+                (setv path (nx.shortest-path graph1 pt concept)
+                      path- path path (.join ", " (lfor p path (str p))))
+                (+= script (.format "dx({}, {}, [{}]).\n" pt concept path))
+                (+= nodes (+ path- [concept pt]))))
+      (for [fam fams]
+        (when (has-shortest-path-of-length graph2 fam concept jumps)
+              (setv path (nx.shortest-path graph2 fam concept)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "dx({}, {}, [{}]).\n" fam concept path))
+              (+= nodes (+ path- [concept fam]))))
+      (for [hx hxs]
+        (when (has-shortest-path-of-length graph2 hx concept jumps)
+              (setv path (nx.shortest-path graph2 hx concept)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "hx({}, {}, [{}]).\n" hx concept path))
+              (+= nodes (+ path- [concept hx])))
+        (for [negex negexs]
+          (when (has-shortest-path-of-length graph2 negex hx jumps)
+                (setv path (nx.shortest-path graph2 negex hx)
+                      path- path path (.join ", " (lfor p path (str p))))
+                (+= script (.format "negex({}, {}, [{}]).\n" negex hx path))
+                (+= nodes (+ path- [negex hx])))))
+      (for [rx rxs]
+        (when (has-shortest-path-of-length graph2 rx concept jumps)
+              (setv path (nx.shortest-path graph2 rx concept)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "risk({}, {}, [{}]).\n" rx concept path))
+              (+= nodes (+ path- [concept rx])))
+        (for [negex negexs]
+          (when (has-shortest-path-of-length graph2 negex rx jumps)
+                (setv path (nx.shortest-path graph2 negex rx)
+                      path- path path (.join ", " (lfor p path (str p))))
+                (+= script (.format "negex({}, {}, [{}]).\n" negex rx path))
+                (+= nodes (+ path- [negex rx])))))
+      (for [negex negexs]
+        (when (has-shortest-path-of-length graph2 negex concept jumps)
+              (setv path (nx.shortest-path graph2 negex concept)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "negex({}, {}, [{}]).\n" negex concept))
+              (+= nodes (+ path- [negex concept])))))
+    ;-
+    (for [fam fams]
+      (when (has-shortest-path-of-length graph1 pt fam jumps)
+            (setv path (nx.shortest-path graph1 pt fam)
+                  path- path path (.join ", " (lfor p path (str p))))
+            (+= script (.format "family({}, {}, [{}]).\n" rx concept path))
+            (+= nodes (+ path- [pt fam])))
+      (when (has-shortest-path-of-length graph1 fam pt jumps)
+            (setv path (nx.shortest-path graph1 fam pt)
+                  path- path path (.join ", " (lfor p path (str p))))
+            (+= script (.format "family({}, {}, [{}]).\n" fam pt path))
+            (+= nodes (+ path- [pt fam])))
+      (for [negex negexs]
+        (when (has-shortest-path-of-length graph2 negex fam jumps)
+              (setv path (nx.shortest-path graph2 negex fam)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "negex({}, {}, [{}]).\n" negex fam path))
+              (+= nodes (+ path- [negex fam])))))
+
+    ;-
+    (for [caretaker caretakers]
+      (when (has-shortest-path-of-length graph1 pt caretaker jumps)
+            (setv path (nx.shortest-path graph1 pt caretaker)
+                  path- path path (.join ", " (lfor p path (str p))))
+            (+= script (.format "caregiver({}, {}, [{}]).\n" pt caretaker path))
+            (+= nodes (+ path- [pt caretaker])))
+      (when (has-shortest-path-of-length graph1 caretaker pt jumps)
+            (setv path (nx.shortest-path graph1 caretaker pt)
+                  path- path path (.join ", " (lfor p path (str p))))
+            (+= script (.format "caregiver({}, {}, [{}]).\n" caretaker pt path))
+            (+= nodes (+ path- [pt caretaker])))
+      (for [negex negexs]
+        (when (has-shortest-path-of-length graph2 negex caretaker jumps)
+              (setv path (nx.shortest-path graph2 negex caretaker)
+                    path- path path (.join ", " (lfor p path (str p))))
+              (+= script (.format "negex({}, {}, [{}]).\n" negex caretaker path))
+              (+= nodes (+ path- [negex caretaker])))))
+
+    (for [node (list (set nodes))]
+      (let [n (get graph.nodes node)]
+        (setv script (+ (.format "lex({}, \"{}\", \"{}\", {}, {}).\n" node (get n "lex") (get n "text") (get n "startx") (get n "endx"))
+                        script))))
+
+    (.format PROLOG-TEMPLATE script)))

@@ -2,12 +2,11 @@
 from time import time
 from beacon import Beacon
 import pandas as pd
-pd.set_option("display.max_rows", 300)
 
 #-
 import matplotlib.pyplot as plt
 import networkx as nx
-from beacon.bert.semantic_relations import compile_DG, find_simplest_paths
+from beacon.bert.semantic_relations import compile_DG, compile_prolog
 from beacon.vis import display_KG
 
 #- Main
@@ -23,15 +22,18 @@ if __name__ == "__main__":
     #- Run beacon on text
     t = time()
     result = beacon(text,
-                    bert_depth=3, # Number of Attention Layers to use; Shorter text typically need less layers
-                    bert_threshold=0.6) # Energy threshold for building relations; Higher values means more strict selection.
-    elapsed = time() - t
+                    bert_layers=[4, 8])#, # Number of Attention Layers to use; Shorter text typically need less layers
 
-    #- Print Annotations
+    #- Compile Directed Dependency Graph
+    G, pt = compile_DG(result)
+
+    #- Compile Prolog Facts
+    script = compile_prolog(result, G, pt)
+
+    #- Display Results
+    elapsed = time() - t
+    print("Computed in (sec): {}".format(elapsed))
     print(result.drop(columns=["snippet_text"]))
     print(result["snippet_text"].unique())
-    print("Computed in (sec): {}".format(elapsed))
-
-    #- Draw Directed Dependency Graph
-    G, root = compile_DG(result[result["snippet_index"]==2])
+    print(script)
     display_KG(G)

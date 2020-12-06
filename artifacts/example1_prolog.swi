@@ -1,0 +1,49 @@
+% BEACON: Logical Inquiry Script.
+
+% Predicate Configurations
+:- discontiguous dx/2.
+:- discontiguous negex/2.
+:- dynamic negex/2.
+
+% BERT Derived Facts:
+
+lex(25, "DOT", ".", 676, 677).
+lex(24, "UMLS-HOMELESS", "homeless shelter", 660, 676).
+lex(14, "CG", "support system", 549, 563).
+lex(12, "NEGEX", "denies any", 538, 548).
+lex(11, "ROOT", "denies", 538, 544).
+lex(9, "PT", "pt", 534, 538).
+lex(8, "DOT", ".", 533, 534).
+lex(4, "NEGEX", "no", 497, 500).
+patient(9).
+dx(9, 24, [9, 8, 25, 24]).
+caregiver(9, 14, [9, 11, 14]).
+caregiver(14, 9, [14, 11, 9]).
+negex(4, 14, [4, 12, 14]).
+negex(12, 14, [12, 14]).
+
+
+% Predicate Rules
+confirmed_positive_dx(Subject, Dx) :-
+  patient(Subject),
+  dx(Subject, Dx),
+  not(negex(_, Dx)).
+
+confirmed_negative_dx(Subject, Dx) :-
+  patient(Subject),
+  dx(Subject, Dx),
+  negex(_, Dx).
+
+confirmed_hx(Subject, Dx) :-
+  confirmed_dx(Subject, Dx),
+  hx(_, Dx).
+
+patient_family(Patient, Subject) :-
+  patient(Patient),
+  family(Patient,Subject),
+  not(negex(_, Subject)).
+
+patient_family(Patient, Subject) :-
+  patient(Patient),
+  family(Subject,Patient),
+  not(negex(_, Subject)).
