@@ -1,49 +1,1131 @@
-% BEACON: Logical Inquiry Script.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEACON: Prolog Inference %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% Predicate Configurations
-:- discontiguous dx/2.
-:- discontiguous negex/2.
-:- dynamic negex/2.
+%-- Configurations
 
-% BERT Derived Facts:
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-lex(25, "DOT", ".", 676, 677).
-lex(24, "UMLS-HOMELESS", "homeless shelter", 660, 676).
-lex(14, "CG", "support system", 549, 563).
-lex(12, "NEGEX", "denies any", 538, 548).
-lex(11, "ROOT", "denies", 538, 544).
-lex(9, "PT", "pt", 534, 538).
-lex(8, "DOT", ".", 533, 534).
-lex(4, "NEGEX", "no", 497, 500).
-patient(9).
-dx(9, 24, [9, 8, 25, 24]).
-caregiver(9, 14, [9, 11, 14]).
-caregiver(14, 9, [14, 11, 9]).
-negex(4, 14, [4, 12, 14]).
-negex(12, 14, [12, 14]).
+%-- Lexicon Priors
 
+termi(".").
+termi("!").
+termi("?").
+termi(",").
+termi(";").
+punct(":").
+self("i").
+self("my").
+self("me").
+self("myself").
+pt("veteran").
+pt("veteran's").
+pt("patient").
+pt("patient's").
+pt("pt").
+pt("pt's").
+cg("care giver").
+cg("care giver's").
+cg("caregiver").
+cg("caregiver's").
+cg("support system").
+fam("aunt").
+fam("aunt's").
+fam("aunts").
+fam("aunts'").
+fam("boyfriend").
+fam("boyfriend's").
+fam("boyfriends").
+fam("boyfriends'").
+fam("partner").
+fam("partner's").
+fam("partners'").
+fam("bride").
+fam("bride's").
+fam("bridegroom").
+fam("bridegroom's").
+fam("bridegrooms").
+fam("bridegrooms'").
+fam("brides").
+fam("brides'").
+fam("brother").
+fam("brother-in-law").
+fam("brother-in-law's").
+fam("brother-in-laws'").
+fam("brother's").
+fam("brothers").
+fam("brothers-in-law").
+fam("brothers'").
+fam("child's").
+fam("children").
+fam("childs").
+fam("childs'").
+fam("child").
+fam("cousin").
+fam("cousin's").
+fam("cousins").
+fam("cousins'").
+fam("dad").
+fam("dad's").
+fam("dads").
+fam("dads'").
+fam("daughter").
+fam("daughter-in-law").
+fam("daughter-in-law's").
+fam("daughter-in-laws'").
+fam("daughter's").
+fam("daughters").
+fam("daughters-in-law").
+fam("daughters'").
+fam("family").
+fam("family member").
+fam("father").
+fam("father-in-law").
+fam("father-in-law's").
+fam("father-in-laws'").
+fam("father's").
+fam("fathers").
+fam("fathers-in-law").
+fam("fathers'").
+fam("fiance").
+fam("fiance's").
+fam("fiancee").
+fam("fiancee's").
+fam("fiancees").
+fam("fiancees'").
+fam("fiances").
+fam("fiances'").
+fam("girlfriend").
+fam("girlfriend's").
+fam("girlfriends").
+fam("girlfriends'").
+fam("godchild").
+fam("godchild's").
+fam("godchildren").
+fam("godchilds").
+fam("godchilds'").
+fam("goddaughter").
+fam("goddaughter's").
+fam("goddaughters").
+fam("goddaughters'").
+fam("godfather").
+fam("godfather's").
+fam("godfathers").
+fam("godfathers'").
+fam("godmother").
+fam("godmother's").
+fam("godmothers").
+fam("godmothers'").
+fam("godson").
+fam("godson's").
+fam("godsons").
+fam("godsons'").
+fam("grandchild").
+fam("grandchild's").
+fam("grandchilds").
+fam("grandchilds'").
+fam("granddad").
+fam("granddad's").
+fam("granddads").
+fam("granddads'").
+fam("granddaughter").
+fam("granddaughter's").
+fam("granddaughters").
+fam("granddaughters'").
+fam("grandfather").
+fam("grandfather's").
+fam("grandfathers").
+fam("grandfathers'").
+fam("grandma").
+fam("grandma's").
+fam("grandmas").
+fam("grandmas'").
+fam("grandmother").
+fam("grandmother's").
+fam("grandmothers").
+fam("grandmothers'").
+fam("grandpa").
+fam("grandpa's").
+fam("grandparent").
+fam("grandpas").
+fam("grandpas'").
+fam("grandson").
+fam("grandson's").
+fam("grandsons").
+fam("grandsons'").
+fam("granny").
+fam("granny's").
+fam("grannys").
+fam("grannys'").
+fam("groom").
+fam("groom's").
+fam("grooms").
+fam("grooms'").
+fam("husband").
+fam("husband's").
+fam("husbands").
+fam("husbands'").
+fam("kid").
+fam("kids").
+fam("mom").
+fam("mom's").
+fam("moms").
+fam("moms'").
+fam("mother").
+fam("stepmother").
+fam("mother-in-law").
+fam("mother-in-law's").
+fam("mother-in-laws'").
+fam("mother's").
+fam("mothers").
+fam("mothers-in-law").
+fam("mothers'").
+fam("mum").
+fam("mum's").
+fam("mummy").
+fam("mummy's").
+fam("mummys").
+fam("mummys'").
+fam("mums").
+fam("mums'").
+fam("nephew").
+fam("nephew's").
+fam("nephews").
+fam("nephews'").
+fam("niece").
+fam("niece's").
+fam("nieces").
+fam("nieces'").
+fam("parent").
+fam("parent's").
+fam("parents").
+fam("parents-in-law").
+fam("parents-in-law's").
+fam("parents-in-laws'").
+fam("parents'").
+fam("sister").
+fam("sister-in-law").
+fam("sister-in-law's").
+fam("sister-in-laws'").
+fam("sister's").
+fam("sisters").
+fam("sisters-in-law").
+fam("sisters'").
+fam("sibling").
+fam("siblings").
+fam("son").
+fam("son-in-law").
+fam("son-in-law's").
+fam("son-in-laws'").
+fam("son's").
+fam("sons").
+fam("sons-in-law").
+fam("sons'").
+fam("spouse").
+fam("spouse's").
+fam("spouses").
+fam("spouses'").
+fam("uncle").
+fam("uncle's").
+fam("uncles").
+fam("uncles'").
+fam("wife").
+fam("wife's").
+fam("wifes").
+fam("wifes'").
+fam("wives").
+hx("hx").
+hx("h/o").
+hx("history").
+hx("history of").
+hx("a history of").
+hx("ho").
+hx("hx").
+hx("past").
+hx("has had").
+hx("has been").
+hx("patient history").
+hx("previous").
+hx("previously").
+negex("not").
+negex("no").
+negex("strongly argues against").
+negex("(-)").
+negex("absence of").
+negex("absent").
+negex("adequate to rule her out").
+negex("adequate to rule her out for").
+negex("adequate to rule him out").
+negex("adequate to rule him out for").
+negex("adequate to rule out").
+negex("adequate to rule out for").
+negex("adequate to rule the patient out").
+negex("adequate to rule the patient out against").
+negex("adequate to rule the patient out for").
+negex("are ruled out").
+negex("argue against").
+negex("argues against").
+negex("argues strongly against").
+negex("arguing against").
+negex("be ruled out").
+negex("be ruled out for").
+negex("been ruled out").
+negex("being ruled out").
+negex("but no evidence of").
+negex("but no sign of").
+negex("but no").
+negex("but without").
+negex("can be ruled out").
+negex("can be ruled out for").
+negex("can rule her out").
+negex("can rule her out against").
+negex("can rule her out for").
+negex("can rule him out").
+negex("can rule him out against").
+negex("can rule him out for").
+negex("can rule out").
+negex("can rule out against").
+negex("can rule out for").
+negex("can rule the patient out").
+negex("can rule the patinet out against").
+negex("can rule the patinet out for").
+negex("can't remember").
+negex("cannot be").
+negex("cannot see").
+negex("checked for").
+negex("could be ruled out").
+negex("could be ruled out for").
+negex("declined").
+negex("declines").
+negex("demonstrate no").
+negex("demonstrates no").
+negex("denied").
+negex("denied any").
+negex("denies").
+negex("denies any").
+negex("denies ever having").
+negex("denies frank").
+negex("denies having").
+negex("deny").
+negex("denying").
+negex("did not rule out").
+negex("did rule her out").
+negex("did rule her out against").
+negex("did rule her out for").
+negex("did rule him out").
+negex("did rule him out against").
+negex("did rule him out for").
+negex("did rule out").
+negex("did rule out against").
+negex("did rule out for").
+negex("did rule the patient out").
+negex("did rule the patient out against").
+negex("did rule the patient out for").
+negex("do not suspect").
+negex("doesn't have").
+negex("doesn't know").
+negex("doubtful").
+negex("except").
+negex("extremely unlikely").
+negex("fails to reveal").
+negex("fails to show").
+negex("free").
+negex("free of").
+negex("goes against").
+negex("has been ruled out").
+negex("have been ruled out").
+negex("highly doubt").
+negex("highly unlikely given").
+negex("however").
+negex("however no").
+negex("inconsistant with").
+negex("is ruled out").
+negex("is to be ruled out").
+negex("is to be ruled out for").
+negex("less likely given").
+negex("less likey").
+negex("low likelihood").
+negex("low suspicion").
+negex("may be ruled out").
+negex("may be ruled out for").
+negex("might be ruled out").
+negex("might be ruled out for").
+negex("much less likely").
+negex("must be ruled out").
+negex("must be ruled out for").
+negex("must r/o").
+negex("neg").
+negex("negative").
+negex("negative for").
+negex("never developed").
+negex("never had").
+negex("has never").
+negex("never").
+negex("no abnormal").
+negex("no additional").
+negex("no cause of").
+negex("no certain evidence of").
+negex("no change").
+negex("no clear").
+negex("no complaints of").
+negex("no convincing").
+negex("no definite").
+negex("no definite change").
+negex("no definite evidence for").
+negex("no definite evidence of").
+negex("no definitive").
+negex("no definitive evidence of").
+negex("no discrete").
+negex("no e/o").
+negex("no evidence").
+negex("no evidence for").
+negex("no evidence of").
+negex("no evidence to suggest").
+negex("no evident").
+negex("no findings of").
+negex("no findings to indicate").
+negex("no focal").
+negex("no gross").
+negex("no increase").
+negex("no interval change").
+negex("no mammographic evidence of").
+negex("no new").
+negex("no new evidence").
+negex("no obvious").
+negex("no obvious sign of").
+negex("no other").
+negex("no other evidence").
+negex("no other evidence of").
+negex("no other sign of").
+negex("no radiographic evidence of").
+negex("no sign of").
+negex("no significant").
+negex("no significant change").
+negex("no significant interval change").
+negex("no signs").
+negex("no signs of").
+negex("no suggestion of").
+negex("no suspicion").
+negex("no suspicious").
+negex("no suspicious change").
+negex("nor").
+negex("not").
+negex("not appear").
+negex("not appreciate").
+negex("not associated with").
+negex("not been ruled out").
+negex("not cause").
+negex("not certain if").
+negex("not certain whether").
+negex("not complain of").
+negex("not demonstrate").
+negex("not drain").
+negex("not exhibit").
+negex("not extend").
+negex("not feel").
+negex("not had").
+negex("not have").
+negex("not know of").
+negex("not known to have").
+negex("not necessarily").
+negex("not see").
+negex("not to be").
+negex("other possibilities of").
+negex("otherwise no").
+negex("otherwise no evidence of").
+negex("ought to be ruled out").
+negex("ought to be ruled out for").
+negex("patient was not").
+negex("r/o").
+negex("ro").
+negex("rule her out").
+negex("rule her out for").
+negex("rule him out").
+negex("rule him out for").
+negex("rule out").
+negex("rule out for").
+negex("rule the patient out").
+negex("rule the patient out for").
+negex("ruled her out").
+negex("ruled her out against").
+negex("ruled her out for").
+negex("ruled him out").
+negex("ruled him out against").
+negex("ruled him out for").
+negex("ruled out").
+negex("ruled out against").
+negex("ruled out for").
+negex("ruled the patient out").
+negex("ruled the patient out against").
+negex("ruled the patient out for").
+negex("rules her out").
+negex("rules her out for").
+negex("rules him out").
+negex("rules him out for").
+negex("rules out").
+negex("rules out for").
+negex("rules the patient out").
+negex("rules the patient out for").
+negex("seems less likely").
+negex("seems unlikely").
+negex("seems unlikely given").
+negex("should be ruled out").
+negex("should be ruled out for").
+negex("shows no").
+negex("speaks against").
+negex("strongly argues against").
+negex("sufficient to rule her out").
+negex("sufficient to rule her out against").
+negex("sufficient to rule her out for").
+negex("sufficient to rule him out").
+negex("sufficient to rule him out against").
+negex("sufficient to rule him out for").
+negex("sufficient to rule out").
+negex("sufficient to rule out against").
+negex("sufficient to rule out for").
+negex("sufficient to rule the patient out").
+negex("sufficient to rule the patient out against").
+negex("sufficient to rule the patient out for").
+negex("there are no").
+negex("there is no").
+negex("there is no definite").
+negex("there is no evidence").
+negex("to exclude").
+negex("unlikely").
+negex("unlikley").
+negex("unremarkable for").
+negex("very low suspicion").
+negex("very unlikely").
+negex("was ruled out").
+negex("what must be ruled out is").
+negex("will be ruled out").
+negex("will be ruled out for").
+negex("with minimal").
+negex("with no").
+negex("with no definite").
+negex("with no evidence").
+negex("with no sign").
+negex("without").
+negex("without any").
+negex("without any evidence of").
+negex("without definite").
+negex("without difficulty").
+negex("without evidence").
+negex("without evidence for").
+negex("without evidence of").
+negex("without gross").
+negex("without indication of").
+negex("without obvious").
+negex("without sign of").
+negex("without significant").
+negex("without signs").
+negex("would argue against").
+prev("avoid").
+prev("avoidance").
+prev("counseled extensively").
+prev("educated about").
+prev("educated extensively").
+prev("educated regarding").
+prev("help prevent").
+prev("mitigate").
+prev("ppx").
+prev("prevent").
+prev("prevent future").
+prev("prevent recurrence").
+prev("preventative").
+prev("preventative measure").
+prev("preventative measures").
+prev("preventing").
+prev("prevention").
+prev("preventive").
+prev("preventive measures").
+prev("preventive strategies").
+prev("proph").
+prev("prophy").
+prev("prophylactic").
+prev("prophylaxis").
+prev("prophylaxis against").
+prev("prophylaxsis").
+prev("protect").
+prev("protect against").
+prev("protection").
+prev("protection against").
+prev("provided education").
+prev("re-educated about").
+risk("adverse outcomes").
+risk("also cannot exclude").
+risk("although").
+risk("and possible").
+risk("and probable").
+risk("broad ddx").
+risk("cannot exclude").
+risk("cannot r/o").
+risk("cannot rule out").
+risk("chance").
+risk("chances").
+risk("complication").
+risk("conceivable that").
+risk("concern for").
+risk("concern for possible").
+risk("could be").
+risk("could be due to").
+risk("could lead").
+risk("ddx").
+risk("ddx incl").
+risk("ddx include").
+risk("ddx included").
+risk("ddx includes").
+risk("ddx most likely").
+risk("ddx uti").
+risk("diff dx").
+risk("diff dx includes").
+risk("diffdx").
+risk("differential includes").
+risk("disease suspected").
+risk("doubt").
+risk("doubt infectious").
+risk("findings suggest").
+risk("findings suggestive of").
+risk("findings suspicious for").
+risk("further eval").
+risk("greater risk").
+risk("high likelihood").
+risk("high liklihood").
+risk("high risk").
+risk("higher likelihood").
+risk("higher risk").
+risk("highest risk").
+risk("highly suggestive").
+risk("implies").
+risk("implying").
+risk("increased risk").
+risk("indications risks").
+risk("inherent risks").
+risk("is suggested by").
+risk("is suspected").
+risk("less likely").
+risk("less likley").
+risk("likelihood").
+risk("may").
+risk("may be").
+risk("may be indicative of").
+risk("may have").
+risk("may indicate").
+risk("may suggest").
+risk("mdm ddx").
+risk("might").
+risk("might appear").
+risk("minimize risk").
+risk("most likely explanation").
+risk("likley").
+risk("much higher risk").
+risk("must be considered").
+risk("must consider").
+risk("not rule out").
+risk("not ruled out").
+risk("one would expect").
+risk("other possibilities include").
+risk("perhaps due to").
+risk("plausible").
+risk("poss").
+risk("possibe").
+risk("possibel").
+risk("possibility").
+risk("possibility of").
+risk("possibily").
+risk("possible").
+risk("possible etiologies include").
+risk("possiblity").
+risk("possibly").
+risk("possibly associated with").
+risk("possibly due to").
+risk("potential complications").
+risk("potential risks").
+risk("potential side effects").
+risk("presumed").
+risk("prob").
+risk("probability").
+risk("probable").
+risk("probably").
+risk("probably related to").
+risk("propensity").
+risk("question of").
+risk("question related to").
+risk("question whether there is").
+risk("questionable mild").
+risk("raises concern").
+risk("raises concern about").
+risk("raises possibility of").
+risk("raises the question").
+risk("raising question of").
+risk("raising the").
+risk("raising the possibility of").
+risk("raising the question").
+risk("represents some").
+risk("resolved").
+risk("risk").
+risk("risk factor").
+risk("risks alternatives").
+risk("risks associated").
+risk("risks include").
+risk("slightly higher risk").
+risk("source for").
+risk("source of").
+risk("sources for").
+risk("sources of").
+risk("suggest").
+risk("suggest possibility of").
+risk("suggest the possibility").
+risk("suggested by").
+risk("suggesting").
+risk("suggesting possibility of").
+risk("suggesting possible").
+risk("suggestion of").
+risk("suggestive").
+risk("suggestive of").
+risk("suggests either").
+risk("suggests possibility of").
+risk("suggests possible").
+risk("suggests the possibility").
+risk("suspect").
+risk("suspected").
+risk("suspicion").
+risk("suspicion for").
+risk("suspicion of").
+risk("theoretical risk").
+risk("there could be").
+risk("there may be").
+risk("trigger event for").
+risk("which raises the").
+risk("with possible").
+risk("with probable").
+risk("with question").
+risk("would be another consideration").
+header("postoperative diagnosis:").
+header("snippet:").
+header("preoperative diagnosis:").
+header("reason for admission:").
+header("head and neck examination:").
+header("head neck examination:").
+header("neck exam:").
+header("abdomen exam:").
+header("radiographic findings:").
+header("current medication:").
+header("discharge disposition:").
+header("intraoperative findings:").
+header("treatment course:").
+header("mental status :").
+header("status examination:").
+header("mental status examination:").
+header("musculoskeletal exam:").
+header("findings impression:").
+header("general exam:").
+header("skin exam:").
+header("objective examination:").
+header("treatment:").
+header("rectal exam:").
+header("orthopedic examination:").
+header("secondary diagnosis:").
+header("physical and/or laboratory findings:").
+header("laboratory evaluation:").
+header("current medications include:").
+header("discharge condition:").
+header("results:").
+header("procedure note:").
+header("conclusion:").
+header("pelvic exam:").
+header("urological exam:").
+header("abdominal exam:").
+header("cardiovascular exam:").
+header("breast exam:").
+header("discharge:").
+header("social work:").
+header("pysical examination findings:").
+header("discussion:").
+header("heent exam:").
+header("medication:").
+header("diagnostic:").
+header("neurologic exam:").
+header("cardiac exam:").
+header("hospital course:").
+header("significant findings:").
+header("diagnosis discharge:").
+header("discharge diagnosis:").
+header("discharge activity:").
+header("diagnostic comments:").
+header("discharge diagnoses:").
+header("examination:").
+header("indications procedure:").
+header("indication:").
+header("problem:").
+header("condition patient discharge:").
+header("description procedure:").
+header("condition discharge:").
+header("discharge summary:").
+header("discharge summary notes:").
+header("discharge diet:").
+header("admission diagnosis:").
+header("diagnoses:").
+header("reason for hospitalization:").
+header("indications:").
+header("disposition:").
+header("discharge medications:").
+header("physical exam :").
+header("pe:").
+header("operative findings:").
+header("type exam:").
+header("postoperative diagnosis:").
+header("preoperative diagnosis:").
+header("evaluation:").
+header("exam:").
+header("associated diagnoses:").
+header("ddxs:").
+header("ddx:").
+header("clinical diagnosis:").
+header("cytologic diagnosis:").
+header("diagnosis:").
+header("procedure:").
+header("current medications:").
+header("medications:").
+header("findings:").
+header("physical examination:").
+header("impression:").
+header("previous surgery:").
+header("previous exam:").
+header("birth developmental history:").
+header("functional history:").
+header("ocular history:").
+header("Identification History:").
+header("history operative findings:").
+header("operative findings:").
+header("follow plan:").
+header("hospitalizations:").
+header("past hospitalizations:").
+header("history present injury:").
+header("present injury:").
+header("previous treatment include:").
+header("cheif complaint:").
+header("chief complaint:").
+header("admission diagnosis:").
+header("admitting diagnosis:").
+header("admission dx:").
+header("admitting dxs:").
+header("drug intolerance:").
+header("future:").
+header("previous:").
+header("gynecologic history:").
+header("bleeding disorder:").
+header("history presenting illness:").
+header("environmental history:").
+header("past:").
+header("past history:").
+header("obstetrical history:").
+header("gyn history:").
+header("psychiatric history:").
+header("medical surgical history:").
+header("oncologic history:").
+header("goals of care:").
+header("care goals:").
+header("social history:").
+header("medications:").
+header("medication allergies:").
+header("allergies medications:").
+header("allergies medication:").
+header("follow up:").
+header("gynecologic history:").
+header("drug allergies:").
+header("medication allergies:").
+header("allergies:").
+header("surgical history:").
+header("past medical surgical history:").
+header("brief history:").
+header("medical history:").
+header("interim history:").
+header("history of present illness:").
+header("discontinued medications:").
+header("interval history :").
+header("review of systems :").
+header("review of review:").
+header("developmental history:").
+header("followup care:").
+header("vaccinations history:").
+header("birth history:").
+header("followup:").
+header("interval history:").
+header("past surgical history:").
+header("impression plan:").
+header("gross description:").
+header("identification:").
+header("assessment plan:").
+header("general:").
+header("plan:").
+header("past medical history:").
+header("history of present illness:").
+header("operation:").
+header("exam:").
+header("symptoms:").
+header("past medical history:").
+header("assessment:").
+header("clinical information:").
+header("id/cc:").
+header("hpi:").
+header("cancer treatment:").
+header("treatment:").
+header("pathology:").
+header("care plan:").
+header("clinical diagnosis:").
+header("history of present illness:").
+header("id:").
+header("consult:").
+header("summary:").
+header("path review:").
+header("reason for hospitalization:").
+header("idetification:").
+header("clinical history:").
+header("examination:").
+header("condition:").
+header("impression:").
+header("indication:").
+header("findings:").
+header("contrast:").
+header("history:").
+header("technique:").
+header("comparison:").
+header("resp:").
+header("neuro:").
+header("care plan:").
+header("discharge plan:").
+header("advanced care plan:").
+header("advanced directive:").
+header("plan:").
+header("skin:").
+header("chest:").
+header("endo:").
+header("social:").
+header("procedure:").
+header("radiologists:").
+header("medications:").
+header("diagnosis:").
+header("comparisons:").
+header("indications:").
+header("complications:").
+header("care:").
+header("access:").
+header("conclusion:").
+header("illness:").
+header("course:").
+header("allergies:").
+header("anesthesia:").
+header("radiograph:").
+header("heent:").
+header("ultrasound:").
+header("exam:").
+header("study:").
+header("abdomen:").
+header("consent:").
+header("addendum:").
+header("discharge:").
+header("admission:").
+header("systems:").
+header("views:").
+header("dispo:").
+header("events:").
+header("information:").
+header("soc:").
+header("data:").
+header("abg:").
+header("pulm:").
+header("pelvis:").
+header("view:").
+header("status:").
+header("diagnoses:").
+header("pain:").
+header("results:").
+header("assessment:").
+header("other:").
+header("labs:").
+header("interpretation:").
+header("comments:").
+header("radiologist:").
+header("family medical history:").
+header("family social history:").
+header("family history:").
+header("social history:").
+header("clinical history:").
+header("social work note:").
+header("lymphatics:").
+header("postoperative plan:").
+header("comparison study:").
+header("diagnostic tests:").
+header("operative indications:").
+header("goals:").
+header("developmental assessment:").
+header("amniocentesis results:").
+header("biopsy:").
+header("family history:").
+header("range of motion:").
+header("diagnostic imaging:").
+header("light microscopy:").
+header("equipment:").
+header("flow immunophenotyping:").
+header("medications include:").
+header("problem list:").
+header("reason for referral:").
+header("pet/ct:").
+header("pet:").
+header("principal diagnosis:").
+header("chromosome analysis:").
+header("technical summary:").
+header("patient condition:").
+header("bilateral screening mammogram:").
+header("smoking:").
+header("smoking status:").
+header("complications:").
+header("external cc:").
+header("imaging:").
+header("imaging finding:").
+header("comment:").
+header("clinical information:").
+header("allergies:").
+header("abdomen:").
+header("summary:").
+header("ct:").
+homeless("homeless").
+homeless("squatter").
+homeless("illegal tennant").
+homeless("lives in squat").
+homeless("vagabond").
+homeless("social migrant").
+homeless("tramp").
+homeless("living on the street").
+homeless("lack of housing").
+homeless("living on the street").
+homeless("housing lack").
+homeless("vagrant").
+homeless("sleeping rough").
+homeless("sleeping out").
+homeless("temporary shelter").
+homeless("sleeping in night shelter").
+homeless("sleeping at friends home").
+homeless("sleeping in vehicle").
+homeless("hostel").
+homeless("institutional care facility").
+homeless("homeless center").
+homeless("outreach to the homeless").
+homeless("homeless mentally ill").
+homeless("mentally ill homeless").
+homeless("underserved").
+homeless("temporary shelter").
+homeless("homelessness").
+homeless("illegal migrant").
+homeless("makeshift shelter").
+homeless("lives in homeless shelter").
+homeless("living in homeless shelter").
+homeless("housing service").
+homeless("homeless shelter").
+homeless("eviction").
 
-% Predicate Rules
-confirmed_positive_dx(Subject, Dx) :-
-  patient(Subject),
-  dx(Subject, Dx),
-  not(negex(_, Dx)).
+%-- BERT-Parse Derived Facts:
 
-confirmed_negative_dx(Subject, Dx) :-
-  patient(Subject),
-  dx(Subject, Dx),
-  negex(_, Dx).
+% token(index, token).
 
-confirmed_hx(Subject, Dx) :-
-  confirmed_dx(Subject, Dx),
-  hx(_, Dx).
+token(1, "i").
+token(2, "am").
+token(3, "writing").
+token(4, "this").
+token(5, "quickly").
+token(6, "to").
+token(7, "tell").
+token(8, "you").
+token(9, "it's").
+token(12, "the").
+token(13, "end").
+token(14, ".").
+token(15, "my").
+token(16, "sister").
+token(17, "is").
+token(18, "homeless").
+token(19, ".").
+token(20, "i").
+token(21, "am").
+token(22, "not").
+token(23, "homeless").
+token(24, "or").
+token(25, "hungry").
+token(26, ".").
 
-patient_family(Patient, Subject) :-
-  patient(Patient),
-  family(Patient,Subject),
-  not(negex(_, Subject)).
+% tree(index, node1, node2).
 
-patient_family(Patient, Subject) :-
-  patient(Patient),
-  family(Subject,Patient),
-  not(negex(_, Subject)).
+tree("_G￿17", 5, 6).
+tree("_G￿16", 4, "_G￿17").
+tree("_G￿15", 3, "_G￿16").
+tree("_G￿14", 2, "_G￿15").
+tree("_G￿13", 1, "_G￿14").
+tree("_G￿21", 9, 14).
+tree("_G￿20", 8, "_G￿21").
+tree("_G￿19", 7, "_G￿20").
+tree("_G￿22", 12, 13).
+tree("_G￿18", "_G￿19", "_G￿22").
+tree("_G￿12", "_G￿13", "_G￿18").
+tree("_G￿26", 16, 17).
+tree("_G￿25", 15, "_G￿26").
+tree("_G￿28", 19, 26).
+tree("_G￿27", 18, "_G￿28").
+tree("_G￿24", "_G￿25", "_G￿27").
+tree("_G￿33", 23, 25).
+tree("_G￿32", 22, "_G￿33").
+tree("_G￿31", 21, "_G￿32").
+tree("_G￿30", 20, "_G￿31").
+tree("_G￿29", "_G￿30", 24).
+tree("_G￿23", "_G￿24", "_G￿29").
+tree("_G￿11", "_G￿12", "_G￿23").
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-- Base Predicates
+
+%-
+connected(X,Y) :-
+  tree(X,Y,_);
+  tree(X,_,Y).
+
+%-
+path(A,B,Path) :-
+  travel(A,B,[A],Q),
+  reverse(Q,Path).
+
+%-
+travel(A,B,P,[B|P]) :-
+  connected(A, B).
+
+%-
+travel(A,B,Visited,Path) :-
+  connected(A,C),
+  C \== B,
+  \+member(C,Visited),
+  travel(C,B,[C|Visited],Path).
+
+%-
+dependent(A, B) :-
+  dif(A, B),
+  path(C, A, _),
+  path(C, B, _),
+  (tree(C, A, _) ;
+   tree(C, _, A) ;
+   (tree(C,D,_), tree(D,A,_)) ;
+   (tree(C,D,_), tree(D,_,A)) ;
+   (tree(C,_,D), tree(D,A,_)) ;
+   (tree(C,D,_), tree(D,_,A))).
+
+%-
+dependent_tokens(A, B, TOKENA, TOKENB) :-
+  token(A,TOKENA),
+  token(B,TOKENB),
+  (dependent(A, B);dependent(B, A)).
+
+%-
+typed_dependents(A, B, TOKENA, TOKENB, TYPEA, TYPEB) :-
+  dependent_tokens(A, B, TOKENA, TOKENB),
+  (call(TYPEA,TOKENA),call(TYPEB,TOKENB)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%

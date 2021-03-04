@@ -1,0 +1,59 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% BEACON: Prolog Inference %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-- Configurations
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%-- Base Predicates
+
+%-
+connected(X,Y) :-
+  tree(X,Y,_);
+  tree(X,_,Y).
+
+%-
+path(A,B,Path) :-
+  travel(A,B,[A],Q),
+  reverse(Q,Path).
+
+%-
+travel(A,B,P,[B|P]) :-
+  connected(A, B).
+
+%-
+travel(A,B,Visited,Path) :-
+  connected(A,C),
+  C \== B,
+  \+member(C,Visited),
+  travel(C,B,[C|Visited],Path).
+
+%-
+dependent(A, B) :-
+  dif(A, B),
+  path(C, A, _),
+  path(C, B, _),
+  (tree(C, A, _) ;
+   tree(C, _, A) ;
+   (tree(C,D,_), tree(D,A,_)) ;
+   (tree(C,D,_), tree(D,_,A)) ;
+   (tree(C,_,D), tree(D,A,_)) ;
+   (tree(C,D,_), tree(D,_,A))).
+
+%-
+dependent_tokens(A, B, TOKENA, TOKENB) :-
+  token(A,TOKENA),
+  token(B,TOKENB),
+  (dependent(A, B);dependent(B, A)).
+
+%-
+typed_dependents(A, B, TOKENA, TOKENB, TYPEA, TYPEB) :-
+  dependent_tokens(A, B, TOKENA, TOKENB),
+  (call(TYPEA,TOKENA),call(TYPEB,TOKENB)).
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,39 +1,31 @@
-#-
+#- Imports
+import os, hy, json
 from time import time
 from beacon import Beacon
-import pandas as pd
 
 #-
-import matplotlib.pyplot as plt
-import networkx as nx
-from beacon.bert.semantic_relations import compile_DG, compile_prolog
-from beacon.vis import display_KG
-
-#- Main
 if __name__ == "__main__":
 
-    #- Load Text Example
-    with open("examples/example_1.txt", "r") as f:
-        text = f.read()
+  #- Load Beacon With Pretrained Bert Model
+  t = time()
+  model = Beacon(from_pretrained="bert-base-uncased", layers=[4,5,6])
+  with open("examples/example_1.txt", "r") as f: text = f.read()
+  print("Loading Time(sec): {}".format(time()-t))
+  print("Text Sample:\n{}\n".format(text))
 
-    #- Instantiate Beacon
-    beacon = Beacon()
+  #- Produce Text Abstract Syntax Tree (AST) From Bert Attention
+  t = time()
+  AST = model(text)
+  print("Elapsed Time(sec): {}".format(time()-t))
+  print("Bert Abstract Syntax Tree:\n{}\n".format(AST))
 
-    #- Run beacon on text
-    t = time()
-    result = beacon(text,
-                    bert_layers=[4, 8])#, # Number of Attention Layers to use; Shorter text typically need less layers
-
-    #- Compile Directed Dependency Graph
-    G, pt = compile_DG(result)
-
-    #- Compile Prolog Facts
-    script = compile_prolog(result, G, pt)
-
-    #- Display Results
-    elapsed = time() - t
-    print("Computed in (sec): {}".format(elapsed))
-    print(result.drop(columns=["snippet_text"]))
-    print(result["snippet_text"].unique())
-    print(script)
-    display_KG(G)
+  #- Run Logical Query Using Prolog
+  t = time()
+  results = AST.query({"test1": "typed_dependents(A, B, TOKENA, TOKENB, self, homeless)",
+                       "test2": "typed_dependents(A, B, TOKENA, TOKENB, negex, homeless)",
+                       "test3": "typed_dependents(A, B, TOKENA, TOKENB, fam, homeless)",
+                       "test4": ",".join(["typed_dependents(A, B, TOKENA, TOKENB, self, homeless)",
+                                          "not(typed_dependents(_, B, _, TOKENB, negex, homeless))",
+                                          "not(typed_dependents(_, B, _, TOKENB, fam, homeless))"])})
+  print("Elapsed Time(sec): {}".format(time()-t))
+  print("Query Results:\n{}".format(json.dumps(results, indent=4)))

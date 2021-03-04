@@ -1,0 +1,1017 @@
+lex|string
+TERMI|.
+TERMI|!
+TERMI|?
+TERMI|,
+TERMI|;
+PUNCT|:
+SELF|i
+SELF|my
+SELF|me
+SELF|myself
+PT|veteran
+PT|veteran's
+PT|patient
+PT|patient's
+PT|pt
+PT|pt's
+CG|care giver
+CG|care giver's
+CG|caregiver
+CG|caregiver's
+CG|support system
+FAM|aunt
+FAM|aunt's
+FAM|aunts
+FAM|aunts'
+FAM|boyfriend
+FAM|boyfriend's
+FAM|boyfriends
+FAM|boyfriends'
+FAM|partner
+FAM|partner's
+FAM|partners'
+FAM|bride
+FAM|bride's
+FAM|bridegroom
+FAM|bridegroom's
+FAM|bridegrooms
+FAM|bridegrooms'
+FAM|brides
+FAM|brides'
+FAM|brother
+FAM|brother-in-law
+FAM|brother-in-law's
+FAM|brother-in-laws'
+FAM|brother's
+FAM|brothers
+FAM|brothers-in-law
+FAM|brothers'
+FAM|child's
+FAM|children
+FAM|childs
+FAM|childs'
+FAM|child
+FAM|cousin
+FAM|cousin's
+FAM|cousins
+FAM|cousins'
+FAM|dad
+FAM|dad's
+FAM|dads
+FAM|dads'
+FAM|daughter
+FAM|daughter-in-law
+FAM|daughter-in-law's
+FAM|daughter-in-laws'
+FAM|daughter's
+FAM|daughters
+FAM|daughters-in-law
+FAM|daughters'
+FAM|family
+FAM|family member
+FAM|father
+FAM|father-in-law
+FAM|father-in-law's
+FAM|father-in-laws'
+FAM|father's
+FAM|fathers
+FAM|fathers-in-law
+FAM|fathers'
+FAM|fiance
+FAM|fiance's
+FAM|fiancee
+FAM|fiancee's
+FAM|fiancees
+FAM|fiancees'
+FAM|fiances
+FAM|fiances'
+FAM|girlfriend
+FAM|girlfriend's
+FAM|girlfriends
+FAM|girlfriends'
+FAM|godchild
+FAM|godchild's
+FAM|godchildren
+FAM|godchilds
+FAM|godchilds'
+FAM|goddaughter
+FAM|goddaughter's
+FAM|goddaughters
+FAM|goddaughters'
+FAM|godfather
+FAM|godfather's
+FAM|godfathers
+FAM|godfathers'
+FAM|godmother
+FAM|godmother's
+FAM|godmothers
+FAM|godmothers'
+FAM|godson
+FAM|godson's
+FAM|godsons
+FAM|godsons'
+FAM|grandchild
+FAM|grandchild's
+FAM|grandchilds
+FAM|grandchilds'
+FAM|granddad
+FAM|granddad's
+FAM|granddads
+FAM|granddads'
+FAM|granddaughter
+FAM|granddaughter's
+FAM|granddaughters
+FAM|granddaughters'
+FAM|grandfather
+FAM|grandfather's
+FAM|grandfathers
+FAM|grandfathers'
+FAM|grandma
+FAM|grandma's
+FAM|grandmas
+FAM|grandmas'
+FAM|grandmother
+FAM|grandmother's
+FAM|grandmothers
+FAM|grandmothers'
+FAM|grandpa
+FAM|grandpa's
+FAM|grandparent
+FAM|grandpas
+FAM|grandpas'
+FAM|grandson
+FAM|grandson's
+FAM|grandsons
+FAM|grandsons'
+FAM|granny
+FAM|granny's
+FAM|grannys
+FAM|grannys'
+FAM|groom
+FAM|groom's
+FAM|grooms
+FAM|grooms'
+FAM|husband
+FAM|husband's
+FAM|husbands
+FAM|husbands'
+FAM|kid
+FAM|kids
+FAM|mom
+FAM|mom's
+FAM|moms
+FAM|moms'
+FAM|mother
+FAM|stepmother
+FAM|mother-in-law
+FAM|mother-in-law's
+FAM|mother-in-laws'
+FAM|mother's
+FAM|mothers
+FAM|mothers-in-law
+FAM|mothers'
+FAM|mum
+FAM|mum's
+FAM|mummy
+FAM|mummy's
+FAM|mummys
+FAM|mummys'
+FAM|mums
+FAM|mums'
+FAM|nephew
+FAM|nephew's
+FAM|nephews
+FAM|nephews'
+FAM|niece
+FAM|niece's
+FAM|nieces
+FAM|nieces'
+FAM|parent
+FAM|parent's
+FAM|parents
+FAM|parents-in-law
+FAM|parents-in-law's
+FAM|parents-in-laws'
+FAM|parents'
+FAM|sister
+FAM|sister-in-law
+FAM|sister-in-law's
+FAM|sister-in-laws'
+FAM|sister's
+FAM|sisters
+FAM|sisters-in-law
+FAM|sisters'
+FAM|sibling
+FAM|siblings
+FAM|son
+FAM|son-in-law
+FAM|son-in-law's
+FAM|son-in-laws'
+FAM|son's
+FAM|sons
+FAM|sons-in-law
+FAM|sons'
+FAM|spouse
+FAM|spouse's
+FAM|spouses
+FAM|spouses'
+FAM|uncle
+FAM|uncle's
+FAM|uncles
+FAM|uncles'
+FAM|wife
+FAM|wife's
+FAM|wifes
+FAM|wifes'
+FAM|wives
+HX|hx
+HX|h/o
+HX|history
+HX|history of
+HX|a history of
+HX|ho
+HX|hx
+HX|past
+HX|has had
+HX|has been
+HX|patient history
+HX|previous
+HX|previously
+NEGEX|not
+NEGEX|no
+NEGEX|strongly argues against
+NEGEX|(-)
+NEGEX|absence of
+NEGEX|absent
+NEGEX|adequate to rule her out
+NEGEX|adequate to rule her out for
+NEGEX|adequate to rule him out
+NEGEX|adequate to rule him out for
+NEGEX|adequate to rule out
+NEGEX|adequate to rule out for
+NEGEX|adequate to rule the patient out
+NEGEX|adequate to rule the patient out against
+NEGEX|adequate to rule the patient out for
+NEGEX|are ruled out
+NEGEX|argue against
+NEGEX|argues against
+NEGEX|argues strongly against
+NEGEX|arguing against
+NEGEX|be ruled out
+NEGEX|be ruled out for
+NEGEX|been ruled out
+NEGEX|being ruled out
+NEGEX|but no evidence of
+NEGEX|but no sign of
+NEGEX|but no
+NEGEX|but without
+NEGEX|can be ruled out
+NEGEX|can be ruled out for
+NEGEX|can rule her out
+NEGEX|can rule her out against
+NEGEX|can rule her out for
+NEGEX|can rule him out
+NEGEX|can rule him out against
+NEGEX|can rule him out for
+NEGEX|can rule out
+NEGEX|can rule out against
+NEGEX|can rule out for
+NEGEX|can rule the patient out
+NEGEX|can rule the patinet out against
+NEGEX|can rule the patinet out for
+NEGEX|can't remember
+NEGEX|cannot be
+NEGEX|cannot see
+NEGEX|checked for
+NEGEX|could be ruled out
+NEGEX|could be ruled out for
+NEGEX|declined
+NEGEX|declines
+NEGEX|demonstrate no
+NEGEX|demonstrates no
+NEGEX|denied
+NEGEX|denied any
+NEGEX|denies
+NEGEX|denies any
+NEGEX|denies ever having
+NEGEX|denies frank
+NEGEX|denies having
+NEGEX|deny
+NEGEX|denying
+NEGEX|did not rule out
+NEGEX|did rule her out
+NEGEX|did rule her out against
+NEGEX|did rule her out for
+NEGEX|did rule him out
+NEGEX|did rule him out against
+NEGEX|did rule him out for
+NEGEX|did rule out
+NEGEX|did rule out against
+NEGEX|did rule out for
+NEGEX|did rule the patient out
+NEGEX|did rule the patient out against
+NEGEX|did rule the patient out for
+NEGEX|do not suspect
+NEGEX|doesn't have
+NEGEX|doesn't know
+NEGEX|doubtful
+NEGEX|except
+NEGEX|extremely unlikely
+NEGEX|fails to reveal
+NEGEX|fails to show
+NEGEX|free
+NEGEX|free of
+NEGEX|goes against
+NEGEX|has been ruled out
+NEGEX|have been ruled out
+NEGEX|highly doubt
+NEGEX|highly unlikely given
+NEGEX|however
+NEGEX|however no
+NEGEX|inconsistant with
+NEGEX|is ruled out
+NEGEX|is to be ruled out
+NEGEX|is to be ruled out for
+NEGEX|less likely given
+NEGEX|less likey
+NEGEX|low likelihood
+NEGEX|low suspicion
+NEGEX|may be ruled out
+NEGEX|may be ruled out for
+NEGEX|might be ruled out
+NEGEX|might be ruled out for
+NEGEX|much less likely
+NEGEX|must be ruled out
+NEGEX|must be ruled out for
+NEGEX|must r/o
+NEGEX|neg
+NEGEX|negative
+NEGEX|negative for
+NEGEX|never developed
+NEGEX|never had
+NEGEX|has never
+NEGEX|never
+NEGEX|no abnormal
+NEGEX|no additional
+NEGEX|no cause of
+NEGEX|no certain evidence of
+NEGEX|no change
+NEGEX|no clear
+NEGEX|no complaints of
+NEGEX|no convincing
+NEGEX|no definite
+NEGEX|no definite change
+NEGEX|no definite evidence for
+NEGEX|no definite evidence of
+NEGEX|no definitive
+NEGEX|no definitive evidence of
+NEGEX|no discrete
+NEGEX|no e/o
+NEGEX|no evidence
+NEGEX|no evidence for
+NEGEX|no evidence of
+NEGEX|no evidence to suggest
+NEGEX|no evident
+NEGEX|no findings of
+NEGEX|no findings to indicate
+NEGEX|no focal
+NEGEX|no gross
+NEGEX|no increase
+NEGEX|no interval change
+NEGEX|no mammographic evidence of
+NEGEX|no new
+NEGEX|no new evidence
+NEGEX|no obvious
+NEGEX|no obvious sign of
+NEGEX|no other
+NEGEX|no other evidence
+NEGEX|no other evidence of
+NEGEX|no other sign of
+NEGEX|no radiographic evidence of
+NEGEX|no sign of
+NEGEX|no significant
+NEGEX|no significant change
+NEGEX|no significant interval change
+NEGEX|no signs
+NEGEX|no signs of
+NEGEX|no suggestion of
+NEGEX|no suspicion
+NEGEX|no suspicious
+NEGEX|no suspicious change
+NEGEX|nor
+NEGEX|not
+NEGEX|not appear
+NEGEX|not appreciate
+NEGEX|not associated with
+NEGEX|not been ruled out
+NEGEX|not cause
+NEGEX|not certain if
+NEGEX|not certain whether
+NEGEX|not complain of
+NEGEX|not demonstrate
+NEGEX|not drain
+NEGEX|not exhibit
+NEGEX|not extend
+NEGEX|not feel
+NEGEX|not had
+NEGEX|not have
+NEGEX|not know of
+NEGEX|not known to have
+NEGEX|not necessarily
+NEGEX|not see
+NEGEX|not to be
+NEGEX|other possibilities of
+NEGEX|otherwise no
+NEGEX|otherwise no evidence of
+NEGEX|ought to be ruled out
+NEGEX|ought to be ruled out for
+NEGEX|patient was not
+NEGEX|r/o
+NEGEX|ro
+NEGEX|rule her out
+NEGEX|rule her out for
+NEGEX|rule him out
+NEGEX|rule him out for
+NEGEX|rule out
+NEGEX|rule out for
+NEGEX|rule the patient out
+NEGEX|rule the patient out for
+NEGEX|ruled her out
+NEGEX|ruled her out against
+NEGEX|ruled her out for
+NEGEX|ruled him out
+NEGEX|ruled him out against
+NEGEX|ruled him out for
+NEGEX|ruled out
+NEGEX|ruled out against
+NEGEX|ruled out for
+NEGEX|ruled the patient out
+NEGEX|ruled the patient out against
+NEGEX|ruled the patient out for
+NEGEX|rules her out
+NEGEX|rules her out for
+NEGEX|rules him out
+NEGEX|rules him out for
+NEGEX|rules out
+NEGEX|rules out for
+NEGEX|rules the patient out
+NEGEX|rules the patient out for
+NEGEX|seems less likely
+NEGEX|seems unlikely
+NEGEX|seems unlikely given
+NEGEX|should be ruled out
+NEGEX|should be ruled out for
+NEGEX|shows no
+NEGEX|speaks against
+NEGEX|strongly argues against
+NEGEX|sufficient to rule her out
+NEGEX|sufficient to rule her out against
+NEGEX|sufficient to rule her out for
+NEGEX|sufficient to rule him out
+NEGEX|sufficient to rule him out against
+NEGEX|sufficient to rule him out for
+NEGEX|sufficient to rule out
+NEGEX|sufficient to rule out against
+NEGEX|sufficient to rule out for
+NEGEX|sufficient to rule the patient out
+NEGEX|sufficient to rule the patient out against
+NEGEX|sufficient to rule the patient out for
+NEGEX|there are no
+NEGEX|there is no
+NEGEX|there is no definite
+NEGEX|there is no evidence
+NEGEX|to exclude
+NEGEX|unlikely
+NEGEX|unlikley
+NEGEX|unremarkable for
+NEGEX|very low suspicion
+NEGEX|very unlikely
+NEGEX|was ruled out
+NEGEX|what must be ruled out is
+NEGEX|will be ruled out
+NEGEX|will be ruled out for
+NEGEX|with minimal
+NEGEX|with no
+NEGEX|with no definite
+NEGEX|with no evidence
+NEGEX|with no sign
+NEGEX|without
+NEGEX|without any
+NEGEX|without any evidence of
+NEGEX|without definite
+NEGEX|without difficulty
+NEGEX|without evidence
+NEGEX|without evidence for
+NEGEX|without evidence of
+NEGEX|without gross
+NEGEX|without indication of
+NEGEX|without obvious
+NEGEX|without sign of
+NEGEX|without significant
+NEGEX|without signs
+NEGEX|would argue against
+PREV|avoid
+PREV|avoidance
+PREV|counseled extensively
+PREV|educated about
+PREV|educated extensively
+PREV|educated regarding
+PREV|help prevent
+PREV|mitigate
+PREV|ppx
+PREV|prevent
+PREV|prevent future
+PREV|prevent recurrence
+PREV|preventative
+PREV|preventative measure
+PREV|preventative measures
+PREV|preventing
+PREV|prevention
+PREV|preventive
+PREV|preventive measures
+PREV|preventive strategies
+PREV|proph
+PREV|prophy
+PREV|prophylactic
+PREV|prophylaxis
+PREV|prophylaxis against
+PREV|prophylaxsis
+PREV|protect
+PREV|protect against
+PREV|protection
+PREV|protection against
+PREV|provided education
+PREV|re-educated about
+RISK|adverse outcomes
+RISK|also cannot exclude
+RISK|although
+RISK|and possible
+RISK|and probable
+RISK|broad ddx
+RISK|cannot exclude
+RISK|cannot r/o
+RISK|cannot rule out
+RISK|chance
+RISK|chances
+RISK|complication
+RISK|conceivable that
+RISK|concern for
+RISK|concern for possible
+RISK|could be
+RISK|could be due to
+RISK|could lead
+RISK|ddx
+RISK|ddx incl
+RISK|ddx include
+RISK|ddx included
+RISK|ddx includes
+RISK|ddx most likely
+RISK|ddx uti
+RISK|diff dx
+RISK|diff dx includes
+RISK|diffdx
+RISK|differential includes
+RISK|disease suspected
+RISK|doubt
+RISK|doubt infectious
+RISK|findings suggest
+RISK|findings suggestive of
+RISK|findings suspicious for
+RISK|further eval
+RISK|greater risk
+RISK|high likelihood
+RISK|high liklihood
+RISK|high risk
+RISK|higher likelihood
+RISK|higher risk
+RISK|highest risk
+RISK|highly suggestive
+RISK|implies
+RISK|implying
+RISK|increased risk
+RISK|indications risks
+RISK|inherent risks
+RISK|is suggested by
+RISK|is suspected
+RISK|less likely
+RISK|less likley
+RISK|likelihood
+RISK|may
+RISK|may be
+RISK|may be indicative of
+RISK|may have
+RISK|may indicate
+RISK|may suggest
+RISK|mdm ddx
+RISK|might
+RISK|might appear
+RISK|minimize risk
+RISK|most likely explanation
+RISK|likley
+RISK|much higher risk
+RISK|must be considered
+RISK|must consider
+RISK|not rule out
+RISK|not ruled out
+RISK|one would expect
+RISK|other possibilities include
+RISK|perhaps due to
+RISK|plausible
+RISK|poss
+RISK|possibe
+RISK|possibel
+RISK|possibility
+RISK|possibility of
+RISK|possibily
+RISK|possible
+RISK|possible etiologies include
+RISK|possiblity
+RISK|possibly
+RISK|possibly associated with
+RISK|possibly due to
+RISK|potential complications
+RISK|potential risks
+RISK|potential side effects
+RISK|presumed
+RISK|prob
+RISK|probability
+RISK|probable
+RISK|probably
+RISK|probably related to
+RISK|propensity
+RISK|question of
+RISK|question related to
+RISK|question whether there is
+RISK|questionable mild
+RISK|raises concern
+RISK|raises concern about
+RISK|raises possibility of
+RISK|raises the question
+RISK|raising question of
+RISK|raising the
+RISK|raising the possibility of
+RISK|raising the question
+RISK|represents some
+RISK|resolved
+RISK|risk
+RISK|risk factor
+RISK|risks alternatives
+RISK|risks associated
+RISK|risks include
+RISK|slightly higher risk
+RISK|source for
+RISK|source of
+RISK|sources for
+RISK|sources of
+RISK|suggest
+RISK|suggest possibility of
+RISK|suggest the possibility
+RISK|suggested by
+RISK|suggesting
+RISK|suggesting possibility of
+RISK|suggesting possible
+RISK|suggestion of
+RISK|suggestive
+RISK|suggestive of
+RISK|suggests either
+RISK|suggests possibility of
+RISK|suggests possible
+RISK|suggests the possibility
+RISK|suspect
+RISK|suspected
+RISK|suspicion
+RISK|suspicion for
+RISK|suspicion of
+RISK|theoretical risk
+RISK|there could be
+RISK|there may be
+RISK|trigger event for
+RISK|which raises the
+RISK|with possible
+RISK|with probable
+RISK|with question
+RISK|would be another consideration
+HEADER|postoperative diagnosis:
+HEADER|snippet:
+HEADER|preoperative diagnosis:
+HEADER|reason for admission:
+HEADER|head and neck examination:
+HEADER|head neck examination:
+HEADER|neck exam:
+HEADER|abdomen exam:
+HEADER|radiographic findings:
+HEADER|current medication:
+HEADER|discharge disposition:
+HEADER|intraoperative findings:
+HEADER|treatment course:
+HEADER|mental status :
+HEADER|status examination:
+HEADER|mental status examination:
+HEADER|musculoskeletal exam:
+HEADER|findings impression:
+HEADER|general exam:
+HEADER|skin exam:
+HEADER|objective examination:
+HEADER|treatment:
+HEADER|rectal exam:
+HEADER|orthopedic examination:
+HEADER|secondary diagnosis:
+HEADER|physical and/or laboratory findings:
+HEADER|laboratory evaluation:
+HEADER|current medications include:
+HEADER|discharge condition:
+HEADER|results:
+HEADER|procedure note:
+HEADER|conclusion:
+HEADER|pelvic exam:
+HEADER|urological exam:
+HEADER|abdominal exam:
+HEADER|cardiovascular exam:
+HEADER|breast exam:
+HEADER|discharge:
+HEADER|social work:
+HEADER|pysical examination findings:
+HEADER|discussion:
+HEADER|heent exam:
+HEADER|medication:
+HEADER|diagnostic:
+HEADER|neurologic exam:
+HEADER|cardiac exam:
+HEADER|hospital course:
+HEADER|significant findings:
+HEADER|diagnosis discharge:
+HEADER|discharge diagnosis:
+HEADER|discharge activity:
+HEADER|diagnostic comments:
+HEADER|discharge diagnoses:
+HEADER|examination:
+HEADER|indications procedure:
+HEADER|indication:
+HEADER|problem:
+HEADER|condition patient discharge:
+HEADER|description procedure:
+HEADER|condition discharge:
+HEADER|discharge summary:
+HEADER|discharge summary notes:
+HEADER|discharge diet:
+HEADER|admission diagnosis:
+HEADER|diagnoses:
+HEADER|reason for hospitalization:
+HEADER|indications:
+HEADER|disposition:
+HEADER|discharge medications:
+HEADER|physical exam :
+HEADER|pe:
+HEADER|operative findings:
+HEADER|type exam:
+HEADER|postoperative diagnosis:
+HEADER|preoperative diagnosis:
+HEADER|evaluation:
+HEADER|exam:
+HEADER|associated diagnoses:
+HEADER|ddxs:
+HEADER|ddx:
+HEADER|clinical diagnosis:
+HEADER|cytologic diagnosis:
+HEADER|diagnosis:
+HEADER|procedure:
+HEADER|current medications:
+HEADER|medications:
+HEADER|findings:
+HEADER|physical examination:
+HEADER|impression:
+HEADER|previous surgery:
+HEADER|previous exam:
+HEADER|birth developmental history:
+HEADER|functional history:
+HEADER|ocular history:
+HEADER|Identification History:
+HEADER|history operative findings:
+HEADER|operative findings:
+HEADER|follow plan:
+HEADER|hospitalizations:
+HEADER|past hospitalizations:
+HEADER|history present injury:
+HEADER|present injury:
+HEADER|previous treatment include:
+HEADER|cheif complaint:
+HEADER|chief complaint:
+HEADER|admission diagnosis:
+HEADER|admitting diagnosis:
+HEADER|admission dx:
+HEADER|admitting dxs:
+HEADER|drug intolerance:
+HEADER|future:
+HEADER|previous:
+HEADER|gynecologic history:
+HEADER|bleeding disorder:
+HEADER|history presenting illness:
+HEADER|environmental history:
+HEADER|past:
+HEADER|past history:
+HEADER|obstetrical history:
+HEADER|gyn history:
+HEADER|psychiatric history:
+HEADER|medical surgical history:
+HEADER|oncologic history:
+HEADER|goals of care:
+HEADER|care goals:
+HEADER|social history:
+HEADER|medications:
+HEADER|medication allergies:
+HEADER|allergies medications:
+HEADER|allergies medication:
+HEADER|follow up:
+HEADER|gynecologic history:
+HEADER|drug allergies:
+HEADER|medication allergies:
+HEADER|allergies:
+HEADER|surgical history:
+HEADER|past medical surgical history:
+HEADER|brief history:
+HEADER|medical history:
+HEADER|interim history:
+HEADER|history of present illness:
+HEADER|discontinued medications:
+HEADER|interval history :
+HEADER|review of systems :
+HEADER|review of review:
+HEADER|developmental history:
+HEADER|followup care:
+HEADER|vaccinations history:
+HEADER|birth history:
+HEADER|followup:
+HEADER|interval history:
+HEADER|past surgical history:
+HEADER|impression plan:
+HEADER|gross description:
+HEADER|identification:
+HEADER|assessment plan:
+HEADER|general:
+HEADER|plan:
+HEADER|past medical history:
+HEADER|history of present illness:
+HEADER|operation:
+HEADER|exam:
+HEADER|symptoms:
+HEADER|past medical history:
+HEADER|assessment:
+HEADER|clinical information:
+HEADER|id/cc:
+HEADER|hpi:
+HEADER|cancer treatment:
+HEADER|treatment:
+HEADER|pathology:
+HEADER|care plan:
+HEADER|clinical diagnosis:
+HEADER|history of present illness:
+HEADER|id:
+HEADER|consult:
+HEADER|summary:
+HEADER|path review:
+HEADER|reason for hospitalization:
+HEADER|idetification:
+HEADER|clinical history:
+HEADER|examination:
+HEADER|condition:
+HEADER|impression:
+HEADER|indication:
+HEADER|findings:
+HEADER|contrast:
+HEADER|history:
+HEADER|technique:
+HEADER|comparison:
+HEADER|resp:
+HEADER|neuro:
+HEADER|care plan:
+HEADER|discharge plan:
+HEADER|advanced care plan:
+HEADER|advanced directive:
+HEADER|plan:
+HEADER|skin:
+HEADER|chest:
+HEADER|endo:
+HEADER|social:
+HEADER|procedure:
+HEADER|radiologists:
+HEADER|medications:
+HEADER|diagnosis:
+HEADER|comparisons:
+HEADER|indications:
+HEADER|complications:
+HEADER|care:
+HEADER|access:
+HEADER|conclusion:
+HEADER|illness:
+HEADER|course:
+HEADER|allergies:
+HEADER|anesthesia:
+HEADER|radiograph:
+HEADER|heent:
+HEADER|ultrasound:
+HEADER|exam:
+HEADER|study:
+HEADER|abdomen:
+HEADER|consent:
+HEADER|addendum:
+HEADER|discharge:
+HEADER|admission:
+HEADER|systems:
+HEADER|views:
+HEADER|dispo:
+HEADER|events:
+HEADER|information:
+HEADER|soc:
+HEADER|data:
+HEADER|abg:
+HEADER|pulm:
+HEADER|pelvis:
+HEADER|view:
+HEADER|status:
+HEADER|diagnoses:
+HEADER|pain:
+HEADER|results:
+HEADER|assessment:
+HEADER|other:
+HEADER|labs:
+HEADER|interpretation:
+HEADER|comments:
+HEADER|radiologist:
+HEADER|family medical history:
+HEADER|family social history:
+HEADER|family history:
+HEADER|social history:
+HEADER|clinical history:
+HEADER|social work note:
+HEADER|lymphatics:
+HEADER|postoperative plan:
+HEADER|comparison study:
+HEADER|diagnostic tests:
+HEADER|operative indications:
+HEADER|goals:
+HEADER|developmental assessment:
+HEADER|amniocentesis results:
+HEADER|biopsy:
+HEADER|family history:
+HEADER|range of motion:
+HEADER|diagnostic imaging:
+HEADER|light microscopy:
+HEADER|equipment:
+HEADER|flow immunophenotyping:
+HEADER|medications include:
+HEADER|problem list:
+HEADER|reason for referral:
+HEADER|pet/ct:
+HEADER|pet:
+HEADER|principal diagnosis:
+HEADER|chromosome analysis:
+HEADER|technical summary:
+HEADER|patient condition:
+HEADER|bilateral screening mammogram:
+HEADER|smoking:
+HEADER|smoking status:
+HEADER|complications:
+HEADER|external cc:
+HEADER|imaging:
+HEADER|imaging finding:
+HEADER|comment:
+HEADER|clinical information:
+HEADER|allergies:
+HEADER|abdomen:
+HEADER|summary:
+HEADER|ct:
+HOMELESS|homeless
+HOMELESS|squatter
+HOMELESS|illegal tennant
+HOMELESS|lives in squat
+HOMELESS|vagabond
+HOMELESS|social migrant
+HOMELESS|tramp
+HOMELESS|living on the street
+HOMELESS|lack of housing
+HOMELESS|living on the street
+HOMELESS|housing lack
+HOMELESS|vagrant
+HOMELESS|sleeping rough
+HOMELESS|sleeping out
+HOMELESS|temporary shelter
+HOMELESS|sleeping in night shelter
+HOMELESS|sleeping at friends home
+HOMELESS|sleeping in vehicle
+HOMELESS|hostel
+HOMELESS|institutional care facility
+HOMELESS|homeless center
+HOMELESS|outreach to the homeless
+HOMELESS|homeless mentally ill
+HOMELESS|mentally ill homeless
+HOMELESS|underserved
+HOMELESS|temporary shelter
+HOMELESS|homelessness
+HOMELESS|illegal migrant
+HOMELESS|makeshift shelter
+HOMELESS|lives in homeless shelter
+HOMELESS|living in homeless shelter
+HOMELESS|housing service
+HOMELESS|homeless shelter
+HOMELESS|eviction

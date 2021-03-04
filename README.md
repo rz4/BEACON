@@ -21,150 +21,192 @@ $ pip3 install git+https://github.com/rz4/BEACON.git
 Then import Beacon into your script like:
 
 ```python
-#- Imports
+import hy, json
 from beacon import Beacon
 
-#- Main
 if __name__ == "__main__":
 
-    #- Load Text Example
-    with open("examples/example_1.txt", "r") as f: text = f.read()
+  #- Load Text
+  with open("examples/example_1.txt", "r") as f: text = f.read()
 
-    #- Instantiate Beacon
-    beacon = Beacon()
+  #- Load Beacon With Pretrained Bert Model
+  model = Beacon(from_pretrained="bert-base-uncased", layers=[4,5,6])
 
-    #- Run beacon on text
-    result = beacon(text,
-                    bert_layers=[4, 8])# Which Attention Layers to use;
+  #- Produce Text Abstract Syntax Tree (AST) From Bert Attention
+  AST = model(text)
+  print("Bert Abstract Syntax Tree:\n{}\n".format(AST))
 
-    #- Display Results
-    print(result.drop(columns=["snippet_text"]))
-    print(result["snippet_text"].unique())
-
+  #- Run Logical Query Using Prolog
+  results = AST.query({"test": ",".join(["typed_dependents(A, B, TOKENA, TOKENB, self, homeless)",
+                                          "not(typed_dependents(_, B, _, TOKENB, negex, homeless))",
+                                          "not(typed_dependents(_, B, _, TOKENB, fam, homeless))"])})
+  print("Query Results:\n{}".format(json.dumps(results, indent=4)))
 
 """
-    index  startx  endx                       text  snippet_index  snippet_startx  snippet_endx            lex rels_layers rels_threshold                            rels_index                                       rels_lex rels_tokens
-0       0     486   487                          .              0             486           705            DOT         4|8           0.45                            1|3|7|8|28                           APPOS|DOT|PUNCT|ROOT          57
-1       1     488   495                    psy-soc              0             486           705           ROOT         4|8           0.45                                   0|3                                      DOT|PUNCT          57
-2       2     492   496                       soc:              0             486           705         HEADER
-3       3     495   496                          :              0             486           705          PUNCT         4|8           0.45          0|1|4|5|6|7|8|11|12|15|17|28                APPOS|CONJ|DOT|NEGEX|NSUBJ|ROOT          57
-4       4     497   500                         no              0             486           705          NEGEX         4|8           0.45          0|1|3|5|6|7|8|11|12|13|15|28           APPOS|CONJ|DOBJ|DOT|NEGEX|PUNCT|ROOT          57
-5       5     497   510              no phonecalls              0             486           705           ROOT         4|8           0.45                             3|4|6|7|8                     APPOS|CONJ|DOT|NEGEX|PUNCT          57
-6       6     514   522                   visitors              0             486           705           CONJ         4|8           0.45                             3|4|5|7|8                     APPOS|DOT|NEGEX|PUNCT|ROOT          57
-7       7     523   533                 this shift              0             486           705          APPOS         4|8           0.45                  0|3|4|5|6|8|11|12|28                      CONJ|DOT|NEGEX|PUNCT|ROOT          57
-8       8     533   534                          .              0             486           705            DOT         4|8           0.45  0|1|3|4|5|6|7|9|10|11|12|13|15|25|28  APPOS|CONJ|DOBJ|DOT|NEGEX|NSUBJ|PT|PUNCT|ROOT          57
-9       9     534   538                         pt              0             486           705             PT         4|8           0.45                            8|10|11|12                           DOT|NEGEX|NSUBJ|ROOT          57
-10     10     535   537                         pt              0             486           705          NSUBJ         4|8           0.45                             8|9|11|12                              DOT|NEGEX|PT|ROOT          57
-11     11     538   544                     denies              0             486           705           ROOT         4|8           0.45                3|7|8|9|10|12|13|14|15         APPOS|CG|DOBJ|DOT|NEGEX|NSUBJ|PT|PUNCT          57
-12     12     538   548                 denies any              0             486           705          NEGEX         4|8           0.45            3|4|5|7|8|9|10|11|13|14|15    APPOS|CG|DOBJ|DOT|NEGEX|NSUBJ|PT|PUNCT|ROOT          57
-13     13     545   564        any support systems              0             486           705           DOBJ         4|8           0.45                           11|12|14|15                              CG|DOT|NEGEX|ROOT          57
-14     14     549   563             support system              0             486           705             CG         4|8           0.45                           11|12|13|15                            DOBJ|DOT|NEGEX|ROOT          57
-15     15     564   565                          .              0             486           705            DOT         4|8           0.45                8|11|12|13|14|17|25|28                   CG|DOBJ|DOT|NEGEX|NSUBJ|ROOT          57
-16     16     567   578                **hospital1              0             486           705           ROOT         4|8           0.45                                    17                                          NSUBJ          57
-17     17     579   604  **] stabilization program              0             486           705          NSUBJ         4|8           0.45                                 15|16                                       DOT|ROOT          57
-18     18     622   626                       they              0             486           705          NSUBJ         4|8           0.45                        17|19|20|21|25                          ADVCL|DOT|NEGEX|NSUBJ          57
-19     19     630   633                        not              0             486           705          NEGEX         4|8           0.45                  15|17|18|20|21|22|25                           ADVCL|DOT|NSUBJ|POBJ          57
-20     20     634   640                     accept              0             486           705          ADVCL         4|8           0.45                     17|18|19|21|22|25                           DOT|NEGEX|NSUBJ|POBJ          57
-21     21     641   644                        him              0             486           705          NSUBJ         4|8           0.45                                 18|20                                    ADVCL|NSUBJ          57
-22     22     653   676    d/c to homeless shelter              0             486           705           POBJ         4|8           0.45                              23|24|25                         AMOD|DOT|UMLS-HOMELESS          57
-23     23     660   668                   homeless              0             486           705           AMOD         4|8           0.45                           22|24|25|26                   DOT|NSUBJ|POBJ|UMLS-HOMELESS          57
-24     24     660   676           homeless shelter              0             486           705  UMLS-HOMELESS         4|8           0.45                        21|22|23|25|26                            AMOD|DOT|NSUBJ|POBJ          57
-25     25     676   677                          .              0             486           705            DOT         4|8           0.45              0|8|15|22|23|24|26|27|28         AMOD|DOT|NSUBJ|POBJ|ROOT|UMLS-HOMELESS          57
-26     26     678   695          emotional support              0             486           705          NSUBJ         4|8           0.45                              25|27|28                                       DOT|ROOT          57
-27     27     696   704                   provided              0             486           705           ROOT         4|8           0.45                              25|26|28                                      DOT|NSUBJ          57
-28     28     704   705                          .              0             486           705            DOT         4|8           0.45              0|1|3|7|8|15|17|25|26|27                     APPOS|DOT|NSUBJ|PUNCT|ROOT          57
-['.\npsy-soc: no phonecalls or visitors this shift. pt denies any support systems. [**hospital1 **] stabilization program to eval in am if they do not accept him plan to d/c to homeless shelter. emotional support provided.']
+Bert Abstract Syntax Tree:
+[[["i" ["am" ["writing" ["this" ["quickly" "to"]]]]]
+  [["tell" ["you" ["it's" "."]]] ["the" "end"]]]
+ [[["my" ["sister" "is"]] ["homeless" ["." "."]]]
+  [["i" ["am" ["not" ["homeless" "hungry"]]]] "or"]]]
 
+Query Results:
+{"test" []}
 """
 ```
 ## Example Scripts
 
 - `python3 test_beacon.py` : Runs BEACON on `examples/example_1.txt`;
 
-### Example 1: Building Facts w.r.t Homelessness From Medical Text
+### Example 1: Building Facts w.r.t Homelessness From Text
 
 This section shows how BEACON can be used to derive targeted facts about the patient and
 a selected medical concept given an expert derived vocabulary and an out-of-the-box pretrained BERT language
 model from HuggingFace. We are able to extract predicate rules which can be explored with the help of logic
 programming to reduce the ambiguity of relations between vocabulary terms.
 
->> NEURO: A+OX3. +MAE noted. CIWA scale <10 and no prn valium required this shift. No tremors, diaphoresis or hallucinations noted.
-CV: Monitor shows SB-NSR with occ pacs noted.
-RESP: LSCTA. No sob or resp distress noted. Fio2 weaned to off.
-GI: Abd soft and nontender. +BS noted. Tol reg diet. +BM in toilet and unable to guaic.
-GU: Voiding cl yellow urine in urinal without difficulty.
-SKIN: D+I with no open areas noted.
-M-S:  OOB-C and tol well. Amb with PT with slow steady gait noted.
-PSY-SOC: No phonecalls or visitors this shift. Pt denies any support systems. [**Hospital1 **] stabilization program to eval in am...if they do not accept him plan to d/c to homeless shelter. Emotional support provided.
+>> I am writing this quickly to tell you it's the end. My sister is homeless. I am not homeless or hungry.
 
 
 #### Directed Graph Built from BERT Attention
 ![graph](artifacts/example1_relations.png)
 
 BEACON extracts the activations from self-attention operations in BERT to build a
-directed graph between vocabulary terms. For each token in BERT's representation,
-we select those token relations which produce high Gini inequality given the set
-of possible connections. The resulting graph is a subgraph of the fully connected attention graph
-which have the strongest dependency between each token. Unification is then applied
-over the graph with respect to how BERT tokens map back to our vocabulary terms.
+directed graph between tokens. For each token in BERT's representation,
+we select those interdependent relations which influence high Gini inequality given the set
+of possible token relations. The resulting graph is a subgraph of the fully connected attention graph
+within BERT which have the strongest dependency between tokens. Unification is then applied
+over the graph with respect to how BERT tokens maps tokens and subtokens.
+
+```hy
+[[["i"
+   ["am"
+    ["writing"
+     ["this"
+      ["quickly"
+       "to"]]]]]
+
+
+  [["tell"
+    ["you"
+     ["it's"
+      "."]]]
+   ["the"
+    "end"]]]
+
+ [[["my"
+    ["sister"
+     "is"]]
+   ["homeless"
+    ["."
+     "."]]]
+
+
+  [["i"
+    ["am"
+     ["not"
+      ["homeless"
+       "hungry"]]]]
+   "or"]]]
+```
+
+The directed graph show organization in the form of communities of tokens
+with strong interdependence. In the plot of the graph, these communities
+are colored via subgraph discovery. We use the Girvan-Newman algorithm
+for divisive graph partitioning to build a hierarchical representation
+of the text. A binary tree of tokens can be compiled which best preserves
+the clustering of the tokens in the directed graph.
 
 
 #### SWI-Prolog Script Derived From Directed Graph
 
-A interesting structural property of the above directed graph is that under
-specific node-to-node path constraints you can test the relation between
-vocabulary terms by searching for directed paths between two terms.
+A interesting structural property of the above binary tree is the locality
+of terms which have some dependence on one another. For example, the term
+`homeless` is present in two sentences, but each reference is localized
+in separate subtrees which are related to each referenced token's context.
 This property can be used to build predicate facts around our vocabulary terms.
+We compile the binary tree to SWI-Prolog.
 
 
-```swi-prolog
-% BEACON: Logical Inquiry Script.
+```prolog
+%-- BERT-Parse Derived Facts:
 
-% Predicate Configurations
-:- discontiguous dx/2.
-:- discontiguous negex/2.
-:- dynamic negex/2.
+% token(index, token).
 
-% BERT Derived Facts:
+token(1, "i").
+token(2, "am").
+token(3, "writing").
+token(4, "this").
+token(5, "quickly").
+token(6, "to").
+token(7, "tell").
+token(8, "you").
+token(9, "it's").
+token(12, "the").
+token(13, "end").
+token(14, ".").
+token(15, "my").
+token(16, "sister").
+token(17, "is").
+token(18, "homeless").
+token(19, ".").
+token(20, "i").
+token(21, "am").
+token(22, "not").
+token(23, "homeless").
+token(24, "or").
+token(25, "hungry").
+token(26, ".").
 
-lex(25, "DOT", ".", 676, 677).
-lex(24, "UMLS-HOMELESS", "homeless shelter", 660, 676).
-lex(14, "CG", "support system", 549, 563).
-lex(12, "NEGEX", "denies any", 538, 548).
-lex(11, "ROOT", "denies", 538, 544).
-lex(9, "PT", "pt", 534, 538).
-lex(8, "DOT", ".", 533, 534).
-lex(4, "NEGEX", "no", 497, 500).
-patient(9).
-dx(9, 24, [9, 8, 25, 24]).
-caregiver(9, 14, [9, 11, 14]).
-caregiver(14, 9, [14, 11, 9]).
-negex(4, 14, [4, 12, 14]).
-negex(12, 14, [12, 14]).
+% tree(index, node1, node2).
 
+tree("_G￿17", 5, 6).
+tree("_G￿16", 4, "_G￿17").
+tree("_G￿15", 3, "_G￿16").
+tree("_G￿14", 2, "_G￿15").
+tree("_G￿13", 1, "_G￿14").
+tree("_G￿21", 9, 14).
+tree("_G￿20", 8, "_G￿21").
+tree("_G￿19", 7, "_G￿20").
+tree("_G￿22", 12, 13).
+tree("_G￿18", "_G￿19", "_G￿22").
+tree("_G￿12", "_G￿13", "_G￿18").
+tree("_G￿26", 16, 17).
+tree("_G￿25", 15, "_G￿26").
+tree("_G￿28", 19, 26).
+tree("_G￿27", 18, "_G￿28").
+tree("_G￿24", "_G￿25", "_G￿27").
+tree("_G￿33", 23, 25).
+tree("_G￿32", 22, "_G￿33").
+tree("_G￿31", 21, "_G￿32").
+tree("_G￿30", 20, "_G￿31").
+tree("_G￿29", "_G￿30", 24).
+tree("_G￿23", "_G￿24", "_G￿29").
+tree("_G￿11", "_G￿12", "_G￿23").
+```
 
-% Predicate Rules
-confirmed_positive_dx(Subject, Dx) :-
-  patient(Subject),
-  dx(Subject, Dx),
-  not(negex(_, Dx)).
+By searching local subtrees for dependent terms, we can test for the presence
+of language modifiers dependencies on terms. The example_1 script defines a
+query that searches for a self-identifier token that is dependent on
+a homeless token which isn't dependent on a negation token or a family-identifier
+token.
 
-confirmed_negative_dx(Subject, Dx) :-
-  patient(Subject),
-  dx(Subject, Dx),
-  negex(_, Dx).
+```prolog
+%- Test 1
+?- typed_dependents(A, B, TOKENA, TOKENB, self, homeless).
+%[{"A" 20  "B" 23  "TOKENA" "i"  "TOKENB" "homeless"}
+% {"A" 15  "B" 18  "TOKENA" "my"  "TOKENB" "homeless"}]
 
-confirmed_hx(Subject, Dx) :-
-  confirmed_dx(Subject, Dx),
-  hx(_, Dx).
+%- Test 2
+?- typed_dependents(A, B, TOKENA, TOKENB, negex, homeless).
+%[{"A" 22  "B" 23  "TOKENA" "not"  "TOKENB" "homeless"}]
 
-patient_family(Patient, Subject) :-
-  patient(Patient),
-  family(Patient,Subject),
-  not(negex(_, Subject)).
+%- Test 3
+?- typed_dependents(A, B, TOKENA, TOKENB, fam, homeless).
+%[{"A" 16  "B" 18  "TOKENA" "sister"  "TOKENB" "homeless"}]
 
-patient_family(Patient, Subject) :-
-  patient(Patient),
-  family(Subject,Patient),
-  not(negex(_, Subject)).
+%- Test 4
+?- typed_dependents(A, B, TOKENA, TOKENB, self, homeless),
+   not(typed_dependents(_, B, _, TOKENB, negex, homeless)),
+   not(typed_dependents(_, B, _, TOKENB, fam, homeless)).
+%[]
 ```
