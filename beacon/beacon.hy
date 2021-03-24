@@ -30,9 +30,7 @@
 
   ;--
   (defn __call__ [self text &optional [return-G False]]
-    (let [;text (re.sub "\s+" " " text)
-          text (preprocess text)
-          text (.lower text)
+    (let [text (preprocess text)
           snippets (self._pull_snippet text)
           asts []]
       (for [snippet snippets]

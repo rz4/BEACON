@@ -37,19 +37,16 @@
     (.eval model)))
 
 ;--
-(let [regex1 (re.compile r"[\r\n]+")
-      regex2 (re.compile r"[^\x00-\x7F]+")
-      ;regex3 (re.compile r"\s's\b")
+(let [regex1 (re.compile r"\s+")
+      regex2 (re.compile r"(\S+)\s(\S?\'\S+\s)")
       tokenizer (TreebankWordTokenizer)]
   (defn preprocess [text]
     (let [value (.lower text)
           value (.sub regex1 " " value)
-          value (.sub regex2 " " value)
-          sentence value]
-          ;tokenized (.tokenize tokenizer value)
-          ;sentence (.join " " tokenized)]
-          ;sentence (.sub regex3 "'s" sentence)]
-      sentence)))
+          tokenized (.tokenize tokenizer value)
+          value (.join " " tokenized)
+          value (.sub regex2 r"\1\2" value)]
+      value)))
 
 ;--
 (defn bert-input [x &optional [nb-tokens None] [tokenizer tokenizer]]
