@@ -3,3 +3,5 @@ __pycache__
 lexicons/cori
 old
 data
+src
+output

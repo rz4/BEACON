@@ -4,17 +4,23 @@ TERMI|!
 TERMI|?
 TERMI|,
 TERMI|;
-PUNCT|:
+PUNCT| :
 SELF|i
+SELF|i'll
+SELF|i'm
+SELF|i've
 SELF|my
 SELF|me
 SELF|myself
+SELF|mine
 PT|veteran
 PT|veteran's
 PT|patient
 PT|patient's
 PT|pt
 PT|pt's
+PT|he
+PT|she
 CG|care giver
 CG|care giver's
 CG|caregiver
@@ -190,6 +196,8 @@ FAM|nieces'
 FAM|parent
 FAM|parent's
 FAM|parents
+FAM|relatives
+FAM|friends
 FAM|parents-in-law
 FAM|parents-in-law's
 FAM|parents-in-laws'
@@ -227,15 +235,11 @@ FAM|wifes'
 FAM|wives
 HX|hx
 HX|h/o
-HX|history
-HX|history of
-HX|a history of
 HX|ho
-HX|hx
+HX|history
 HX|past
 HX|has had
 HX|has been
-HX|patient history
 HX|previous
 HX|previously
 NEGEX|not
@@ -692,326 +696,292 @@ RISK|with possible
 RISK|with probable
 RISK|with question
 RISK|would be another consideration
-HEADER|postoperative diagnosis:
-HEADER|snippet:
-HEADER|preoperative diagnosis:
-HEADER|reason for admission:
-HEADER|head and neck examination:
-HEADER|head neck examination:
-HEADER|neck exam:
-HEADER|abdomen exam:
-HEADER|radiographic findings:
-HEADER|current medication:
-HEADER|discharge disposition:
-HEADER|intraoperative findings:
-HEADER|treatment course:
-HEADER|mental status :
-HEADER|status examination:
-HEADER|mental status examination:
-HEADER|musculoskeletal exam:
-HEADER|findings impression:
-HEADER|general exam:
-HEADER|skin exam:
-HEADER|objective examination:
-HEADER|treatment:
-HEADER|rectal exam:
-HEADER|orthopedic examination:
-HEADER|secondary diagnosis:
-HEADER|physical and/or laboratory findings:
-HEADER|laboratory evaluation:
-HEADER|current medications include:
-HEADER|discharge condition:
-HEADER|results:
-HEADER|procedure note:
-HEADER|conclusion:
-HEADER|pelvic exam:
-HEADER|urological exam:
-HEADER|abdominal exam:
-HEADER|cardiovascular exam:
-HEADER|breast exam:
-HEADER|discharge:
-HEADER|social work:
-HEADER|pysical examination findings:
-HEADER|discussion:
-HEADER|heent exam:
-HEADER|medication:
-HEADER|diagnostic:
-HEADER|neurologic exam:
-HEADER|cardiac exam:
-HEADER|hospital course:
-HEADER|significant findings:
-HEADER|diagnosis discharge:
-HEADER|discharge diagnosis:
-HEADER|discharge activity:
-HEADER|diagnostic comments:
-HEADER|discharge diagnoses:
-HEADER|examination:
-HEADER|indications procedure:
-HEADER|indication:
-HEADER|problem:
-HEADER|condition patient discharge:
-HEADER|description procedure:
-HEADER|condition discharge:
-HEADER|discharge summary:
-HEADER|discharge summary notes:
-HEADER|discharge diet:
-HEADER|admission diagnosis:
-HEADER|diagnoses:
-HEADER|reason for hospitalization:
-HEADER|indications:
-HEADER|disposition:
-HEADER|discharge medications:
-HEADER|physical exam :
-HEADER|pe:
-HEADER|operative findings:
-HEADER|type exam:
-HEADER|postoperative diagnosis:
-HEADER|preoperative diagnosis:
-HEADER|evaluation:
-HEADER|exam:
-HEADER|associated diagnoses:
-HEADER|ddxs:
-HEADER|ddx:
-HEADER|clinical diagnosis:
-HEADER|cytologic diagnosis:
-HEADER|diagnosis:
-HEADER|procedure:
-HEADER|current medications:
-HEADER|medications:
-HEADER|findings:
-HEADER|physical examination:
-HEADER|impression:
-HEADER|previous surgery:
-HEADER|previous exam:
-HEADER|birth developmental history:
-HEADER|functional history:
-HEADER|ocular history:
-HEADER|Identification History:
-HEADER|history operative findings:
-HEADER|operative findings:
-HEADER|follow plan:
-HEADER|hospitalizations:
-HEADER|past hospitalizations:
-HEADER|history present injury:
-HEADER|present injury:
-HEADER|previous treatment include:
-HEADER|cheif complaint:
-HEADER|chief complaint:
-HEADER|admission diagnosis:
-HEADER|admitting diagnosis:
-HEADER|admission dx:
-HEADER|admitting dxs:
-HEADER|drug intolerance:
-HEADER|future:
-HEADER|previous:
-HEADER|gynecologic history:
-HEADER|bleeding disorder:
-HEADER|history presenting illness:
-HEADER|environmental history:
-HEADER|past:
-HEADER|past history:
-HEADER|obstetrical history:
-HEADER|gyn history:
-HEADER|psychiatric history:
-HEADER|medical surgical history:
-HEADER|oncologic history:
-HEADER|goals of care:
-HEADER|care goals:
-HEADER|social history:
-HEADER|medications:
-HEADER|medication allergies:
-HEADER|allergies medications:
-HEADER|allergies medication:
-HEADER|follow up:
-HEADER|gynecologic history:
-HEADER|drug allergies:
-HEADER|medication allergies:
-HEADER|allergies:
-HEADER|surgical history:
-HEADER|past medical surgical history:
-HEADER|brief history:
-HEADER|medical history:
-HEADER|interim history:
-HEADER|history of present illness:
-HEADER|discontinued medications:
+HEADER|postoperative diagnosis :
+HEADER|snippet :
+HEADER|preoperative diagnosis :
+HEADER|reason for admission :
+HEADER|head and neck examination :
+HEADER|head neck examination :
+HEADER|neck exam :
+HEADER|abdomen exam :
+HEADER|radiographic findings :
+HEADER|current medication :
+HEADER|discharge disposition :
+HEADER|intraoperative findings :
+HEADER|treatment course :
+HEADER|mental status  :
+HEADER|status examination :
+HEADER|mental status examination :
+HEADER|musculoskeletal exam :
+HEADER|findings impression :
+HEADER|general exam :
+HEADER|skin exam :
+HEADER|objective examination :
+HEADER|treatment :
+HEADER|rectal exam :
+HEADER|orthopedic examination :
+HEADER|secondary diagnosis :
+HEADER|physical and/or laboratory findings :
+HEADER|laboratory evaluation :
+HEADER|current medications include :
+HEADER|discharge condition :
+HEADER|results :
+HEADER|procedure note :
+HEADER|conclusion :
+HEADER|pelvic exam :
+HEADER|urological exam :
+HEADER|abdominal exam :
+HEADER|cardiovascular exam :
+HEADER|breast exam :
+HEADER|discharge :
+HEADER|social work :
+HEADER|pysical examination findings :
+HEADER|discussion :
+HEADER|heent exam :
+HEADER|medication :
+HEADER|diagnostic :
+HEADER|neurologic exam :
+HEADER|cardiac exam :
+HEADER|hospital course :
+HEADER|significant findings :
+HEADER|diagnosis discharge :
+HEADER|discharge diagnosis :
+HEADER|discharge activity :
+HEADER|diagnostic comments :
+HEADER|discharge diagnoses :
+HEADER|examination :
+HEADER|indications procedure :
+HEADER|indication :
+HEADER|problem :
+HEADER|condition patient discharge :
+HEADER|description procedure :
+HEADER|condition discharge :
+HEADER|discharge summary :
+HEADER|discharge summary notes :
+HEADER|discharge diet :
+HEADER|admission diagnosis :
+HEADER|diagnoses :
+HEADER|reason for hospitalization :
+HEADER|indications :
+HEADER|disposition :
+HEADER|discharge medications :
+HEADER|physical exam  :
+HEADER|pe :
+HEADER|operative findings :
+HEADER|type exam :
+HEADER|postoperative diagnosis :
+HEADER|preoperative diagnosis :
+HEADER|evaluation :
+HEADER|exam :
+HEADER|associated diagnoses :
+HEADER|ddxs :
+HEADER|ddx :
+HEADER|clinical diagnosis :
+HEADER|cytologic diagnosis :
+HEADER|diagnosis :
+HEADER|procedure :
+HEADER|current medications :
+HEADER|medications :
+HEADER|findings :
+HEADER|physical examination :
+HEADER|impression :
+HEADER|previous surgery :
+HEADER|previous exam :
+HEADER|birth developmental history :
+HEADER|functional history :
+HEADER|ocular history :
+HEADER|Identification History :
+HEADER|history operative findings :
+HEADER|operative findings :
+HEADER|follow plan :
+HEADER|hospitalizations :
+HEADER|past hospitalizations :
+HEADER|history present injury :
+HEADER|present injury :
+HEADER|previous treatment include :
+HEADER|cheif complaint :
+HEADER|chief complaint :
+HEADER|admission diagnosis :
+HEADER|admitting diagnosis :
+HEADER|admission dx :
+HEADER|admitting dxs :
+HEADER|drug intolerance :
+HEADER|future :
+HEADER|previous :
+HEADER|gynecologic history :
+HEADER|bleeding disorder :
+HEADER|history presenting illness :
+HEADER|environmental history :
+HEADER|past :
+HEADER|past history :
+HEADER|obstetrical history :
+HEADER|gyn history :
+HEADER|psychiatric history :
+HEADER|medical surgical history :
+HEADER|oncologic history :
+HEADER|goals of care :
+HEADER|care goals :
+HEADER|social history :
+HEADER|medications :
+HEADER|medication allergies :
+HEADER|allergies medications :
+HEADER|allergies medication :
+HEADER|follow up :
+HEADER|gynecologic history :
+HEADER|drug allergies :
+HEADER|medication allergies :
+HEADER|allergies :
+HEADER|surgical history :
+HEADER|past medical surgical history :
+HEADER|brief history :
+HEADER|medical history :
+HEADER|interim history :
+HEADER|history of present illness :
+HEADER|discontinued medications :
+HEADER|interval history  :
+HEADER|review of systems  :
+HEADER|review of review :
+HEADER|developmental history :
+HEADER|followup care :
+HEADER|vaccinations history :
+HEADER|birth history :
+HEADER|followup :
 HEADER|interval history :
-HEADER|review of systems :
-HEADER|review of review:
-HEADER|developmental history:
-HEADER|followup care:
-HEADER|vaccinations history:
-HEADER|birth history:
-HEADER|followup:
-HEADER|interval history:
-HEADER|past surgical history:
-HEADER|impression plan:
-HEADER|gross description:
-HEADER|identification:
-HEADER|assessment plan:
-HEADER|general:
-HEADER|plan:
-HEADER|past medical history:
-HEADER|history of present illness:
-HEADER|operation:
-HEADER|exam:
-HEADER|symptoms:
-HEADER|past medical history:
-HEADER|assessment:
-HEADER|clinical information:
-HEADER|id/cc:
-HEADER|hpi:
-HEADER|cancer treatment:
-HEADER|treatment:
-HEADER|pathology:
-HEADER|care plan:
-HEADER|clinical diagnosis:
-HEADER|history of present illness:
-HEADER|id:
-HEADER|consult:
-HEADER|summary:
-HEADER|path review:
-HEADER|reason for hospitalization:
-HEADER|idetification:
-HEADER|clinical history:
-HEADER|examination:
-HEADER|condition:
-HEADER|impression:
-HEADER|indication:
-HEADER|findings:
-HEADER|contrast:
-HEADER|history:
-HEADER|technique:
-HEADER|comparison:
-HEADER|resp:
-HEADER|neuro:
-HEADER|care plan:
-HEADER|discharge plan:
-HEADER|advanced care plan:
-HEADER|advanced directive:
-HEADER|plan:
-HEADER|skin:
-HEADER|chest:
-HEADER|endo:
-HEADER|social:
-HEADER|procedure:
-HEADER|radiologists:
-HEADER|medications:
-HEADER|diagnosis:
-HEADER|comparisons:
-HEADER|indications:
-HEADER|complications:
-HEADER|care:
-HEADER|access:
-HEADER|conclusion:
-HEADER|illness:
-HEADER|course:
-HEADER|allergies:
-HEADER|anesthesia:
-HEADER|radiograph:
-HEADER|heent:
-HEADER|ultrasound:
-HEADER|exam:
-HEADER|study:
-HEADER|abdomen:
-HEADER|consent:
-HEADER|addendum:
-HEADER|discharge:
-HEADER|admission:
-HEADER|systems:
-HEADER|views:
-HEADER|dispo:
-HEADER|events:
-HEADER|information:
-HEADER|soc:
-HEADER|data:
-HEADER|abg:
-HEADER|pulm:
-HEADER|pelvis:
-HEADER|view:
-HEADER|status:
-HEADER|diagnoses:
-HEADER|pain:
-HEADER|results:
-HEADER|assessment:
-HEADER|other:
-HEADER|labs:
-HEADER|interpretation:
-HEADER|comments:
-HEADER|radiologist:
-HEADER|family medical history:
-HEADER|family social history:
-HEADER|family history:
-HEADER|social history:
-HEADER|clinical history:
-HEADER|social work note:
-HEADER|lymphatics:
-HEADER|postoperative plan:
-HEADER|comparison study:
-HEADER|diagnostic tests:
-HEADER|operative indications:
-HEADER|goals:
-HEADER|developmental assessment:
-HEADER|amniocentesis results:
-HEADER|biopsy:
-HEADER|family history:
-HEADER|range of motion:
-HEADER|diagnostic imaging:
-HEADER|light microscopy:
-HEADER|equipment:
-HEADER|flow immunophenotyping:
-HEADER|medications include:
-HEADER|problem list:
-HEADER|reason for referral:
-HEADER|pet/ct:
-HEADER|pet:
-HEADER|principal diagnosis:
-HEADER|chromosome analysis:
-HEADER|technical summary:
-HEADER|patient condition:
-HEADER|bilateral screening mammogram:
-HEADER|smoking:
-HEADER|smoking status:
-HEADER|complications:
-HEADER|external cc:
-HEADER|imaging:
-HEADER|imaging finding:
-HEADER|comment:
-HEADER|clinical information:
-HEADER|allergies:
-HEADER|abdomen:
-HEADER|summary:
-HEADER|ct:
-HOMELESS|homeless
-HOMELESS|squatter
-HOMELESS|illegal tennant
-HOMELESS|lives in squat
-HOMELESS|vagabond
-HOMELESS|social migrant
-HOMELESS|tramp
-HOMELESS|living on the street
-HOMELESS|lack of housing
-HOMELESS|living on the street
-HOMELESS|housing lack
-HOMELESS|vagrant
-HOMELESS|sleeping rough
-HOMELESS|sleeping out
-HOMELESS|temporary shelter
-HOMELESS|sleeping in night shelter
-HOMELESS|sleeping at friends home
-HOMELESS|sleeping in vehicle
-HOMELESS|hostel
-HOMELESS|institutional care facility
-HOMELESS|homeless center
-HOMELESS|outreach to the homeless
-HOMELESS|homeless mentally ill
-HOMELESS|mentally ill homeless
-HOMELESS|underserved
-HOMELESS|temporary shelter
-HOMELESS|homelessness
-HOMELESS|illegal migrant
-HOMELESS|makeshift shelter
-HOMELESS|lives in homeless shelter
-HOMELESS|living in homeless shelter
-HOMELESS|housing service
-HOMELESS|homeless shelter
-HOMELESS|eviction
+HEADER|past surgical history :
+HEADER|impression plan :
+HEADER|gross description :
+HEADER|identification :
+HEADER|assessment plan :
+HEADER|general :
+HEADER|plan :
+HEADER|past medical history :
+HEADER|history of present illness :
+HEADER|operation :
+HEADER|exam :
+HEADER|symptoms :
+HEADER|past medical history :
+HEADER|assessment :
+HEADER|clinical information :
+HEADER|id/cc :
+HEADER|hpi :
+HEADER|cancer treatment :
+HEADER|treatment :
+HEADER|pathology :
+HEADER|care plan :
+HEADER|clinical diagnosis :
+HEADER|history of present illness :
+HEADER|id :
+HEADER|consult :
+HEADER|summary :
+HEADER|path review :
+HEADER|reason for hospitalization :
+HEADER|idetification :
+HEADER|clinical history :
+HEADER|examination :
+HEADER|condition :
+HEADER|impression :
+HEADER|indication :
+HEADER|findings :
+HEADER|contrast :
+HEADER|history :
+HEADER|technique :
+HEADER|comparison :
+HEADER|resp :
+HEADER|neuro :
+HEADER|care plan :
+HEADER|discharge plan :
+HEADER|advanced care plan :
+HEADER|advanced directive :
+HEADER|plan :
+HEADER|skin :
+HEADER|chest :
+HEADER|endo :
+HEADER|social :
+HEADER|procedure :
+HEADER|radiologists :
+HEADER|medications :
+HEADER|diagnosis :
+HEADER|comparisons :
+HEADER|indications :
+HEADER|complications :
+HEADER|care :
+HEADER|access :
+HEADER|conclusion :
+HEADER|illness :
+HEADER|course :
+HEADER|allergies :
+HEADER|anesthesia :
+HEADER|radiograph :
+HEADER|heent :
+HEADER|ultrasound :
+HEADER|exam :
+HEADER|study :
+HEADER|abdomen :
+HEADER|consent :
+HEADER|addendum :
+HEADER|discharge :
+HEADER|admission :
+HEADER|systems :
+HEADER|views :
+HEADER|dispo :
+HEADER|events :
+HEADER|information :
+HEADER|soc :
+HEADER|data :
+HEADER|abg :
+HEADER|pulm :
+HEADER|pelvis :
+HEADER|view :
+HEADER|status :
+HEADER|diagnoses :
+HEADER|pain :
+HEADER|results :
+HEADER|assessment :
+HEADER|other :
+HEADER|labs :
+HEADER|interpretation :
+HEADER|comments :
+HEADER|radiologist :
+HEADER|family medical history :
+HEADER|family social history :
+HEADER|family history :
+HEADER|social history :
+HEADER|clinical history :
+HEADER|social work note :
+HEADER|lymphatics :
+HEADER|postoperative plan :
+HEADER|comparison study :
+HEADER|diagnostic tests :
+HEADER|operative indications :
+HEADER|goals :
+HEADER|developmental assessment :
+HEADER|amniocentesis results :
+HEADER|biopsy :
+HEADER|family history :
+HEADER|range of motion :
+HEADER|diagnostic imaging :
+HEADER|light microscopy :
+HEADER|equipment :
+HEADER|flow immunophenotyping :
+HEADER|medications include :
+HEADER|problem list :
+HEADER|reason for referral :
+HEADER|pet/ct :
+HEADER|pet :
+HEADER|principal diagnosis :
+HEADER|chromosome analysis :
+HEADER|technical summary :
+HEADER|patient condition :
+HEADER|bilateral screening mammogram :
+HEADER|smoking :
+HEADER|smoking status :
+HEADER|complications :
+HEADER|external cc :
+HEADER|imaging :
+HEADER|imaging finding :
+HEADER|comment :
+HEADER|clinical information :
+HEADER|allergies :
+HEADER|abdomen :
+HEADER|summary :
+HEADER|ct :

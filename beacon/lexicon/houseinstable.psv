@@ -1,0 +1,85 @@
+lex|string
+HOMELESS|homelessness
+HOMELESS|homeless
+HOMELESS|squat
+HOMELESS|squatting
+HOMELESS|squatter
+HOMELESS|squatters
+HOMELESS|illegal tennant
+HOMELESS|illegal migrant
+HOMELESS|vagabond
+HOMELESS|vagrant
+HOMELESS|social migrant
+HOMELESS|sleeping rough
+HOMELESS|evicted
+HOMELESS|evicting
+HOMELESS|evict
+HOUSING|house
+HOUSING|housing
+HOUSING|apartment
+HOUSING|home
+NOHOUSING|hospital
+NOHOUSING|shelter
+NOHOUSING|the streets
+NOHOUSING|temporary shelter
+NOHOUSING|makeshift shelter
+NOHOUSING|homeless shelter
+NOHOUSING|night shelter
+NOHOUSING|homeless center
+NOHOUSING|housing service
+NOHOUSING|institutional care facility
+NOHOUSING|friends home
+NOHOUSING|friend's home
+NOHOUSING|sofa
+NOHOUSING|your home
+NOHOUSING|their home
+NOHOUSING|their house
+NOHOUSING|your house
+NOHOUSING|couch
+NOHOUSING|hostel
+NOHOUSING|motel
+NOHOUSING|hotel
+NOHOUSING|vehicle
+NOHOUSINGOTHER|car
+NOHOUSINGOTHER|truck
+NOHOUSINGOTHER|trailer
+NOHOUSINGOTHER|automobile
+NOHOUSINGOTHER|boat
+NOHOUSINGOTHER|the park
+NOHOUSINGOTHER|sidewalk
+HOUSINGCHANGE|lack of
+HOUSINGCHANGE|loss of
+HOUSINGCHANGE|selling
+HOUSINGCHANGE|sold
+HOUSINGCHANGE|don't have
+HOUSINGCHANGE|dont have
+HOUSINGCHANGE|have no
+HOUSINGCHANGE|unable to pay for
+HOUSINGCHANGE|unable to pay the
+HOUSINGCHANGE|left the
+LIVINGSITUATION|lives in
+LIVINGSITUATION|lived in
+LIVINGSITUATION|lives on
+LIVINGSITUATION|lived on
+LIVINGSITUATION|lives at
+LIVINGSITUATION|lived at
+LIVINGSITUATION|living in
+LIVINGSITUATION|living on
+LIVINGSITUATION|living at
+LIVINGSITUATION|sleeps in
+LIVINGSITUATION|slept in
+LIVINGSITUATION|sleep in
+LIVINGSITUATION|sleeps at
+LIVINGSITUATION|slept at
+LIVINGSITUATION|sleep at
+LIVINGSITUATION|sleeping in
+LIVINGSITUATION|sleeping at
+LIVINGSITUATION|sleeping on
+LIVINGSITUATION|sleeps on
+LIVINGSITUATION|slept on
+LIVINGSITUATIONOTHER|live in a
+LIVINGSITUATIONOTHER|live in the
+LIVINGSITUATIONOTHER|live on a
+LIVINGSITUATIONOTHER|live on the
+LIVINGSITUATIONOTHER|lives in a
+LIVINGSITUATIONOTHER|lives on the

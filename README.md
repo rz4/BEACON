@@ -24,33 +24,86 @@ Then import Beacon into your script like:
 import hy, json
 from beacon import Beacon
 
+CONCEPTS ="""
+%--
+fam_homeless(A, B) :-
+  istype(A, fam),
+  istype(B, homeless),
+  undirected(A,B).
+
+%--
+negex_homeless(A, B) :-
+  istype(A, negex),
+  istype(B, homeless),
+  undirected(A,B).
+
+%--
+self_homeless(A, B) :-
+  istype(A, self),
+  istype(B, homeless),
+  undirected(A,B),
+  not(fam_homeless(_,B)),
+  not(negex_homeless(_,B)).
+"""
+
+QUERYS = {"test1":
+            "self_homeless(A,B),\
+             token(A,ATOKEN,ASTARTX,AENDX),\
+             token(B, BTOKEN,BSTARTX,BENDX)",
+          "test2":
+            "fam_homeless(A,B),\
+             token(A,ATOKEN,ASTARTX,AENDX),\
+             token(B, BTOKEN,BSTARTX,BENDX)"}
+
+
 if __name__ == "__main__":
 
   #- Load Text
   with open("examples/example_1.txt", "r") as f: text = f.read()
 
   #- Load Beacon With Pretrained Bert Model
-  model = Beacon(from_pretrained="bert-base-uncased", layers=[4,5,6])
+  model = Beacon(targets=["homeless","housing","nohousing","livingsituation"],
+                 context_len=12,
+                 from_pretrained="bert-base-uncased",
+                 layers=[4,5,6,7,8])
 
   #- Produce Text Abstract Syntax Tree (AST) From Bert Attention
-  AST = model(text)
-  print("Bert Abstract Syntax Tree:\n{}\n".format(AST))
+  annotations = model(text)
 
-  #- Run Logical Query Using Prolog
-  results = AST.query({"test": ",".join(["typed_dependents(A, B, TOKENA, TOKENB, self, homeless)",
-                                          "not(typed_dependents(_, B, _, TOKENB, negex, homeless))",
-                                          "not(typed_dependents(_, B, _, TOKENB, fam, homeless))"])})
-  print("Query Results:\n{}".format(json.dumps(results, indent=4)))
+  #- For each annotation
+   for annotation in annotations:
+       match, snippet, AST = annotation
+       print("Matched '{}' Along '{}'".format(match, snippet))
+       print("Bert Abstract Syntax Tree:\n{}\n".format(AST))
+
+       #- Run Logical Query Using Prolog
+       results = AST.query(QUERYS, priors=CONCEPTS)
+       print("Query Results:\n{}".format(json.dumps(results, indent=4)))
 
 """
+Matched 'homeless' Along 'to tell you it's the end. my sister is homeless. i am not homeless or hungry.'
+
 Bert Abstract Syntax Tree:
-[[["i" ["am" ["writing" ["this" ["quickly" "to"]]]]]
-  [["tell" ["you" ["it's" "."]]] ["the" "end"]]]
- [[["my" ["sister" "is"]] ["homeless" ["." "."]]]
-  [["i" ["am" ["not" ["homeless" "hungry"]]]] "or"]]]
+[[["to" ["you" ["it's" ["the" "."]]]] ["tell" "end"]]
+ [[["my" ["is" "."]] ["sister" "homeless"]]
+  [["i" [["am" ["homeless" ["hungry" "."]]] "not"]] "or"]]]
 
 Query Results:
-{"test" []}
+{
+    "test1": [],
+    "test2": [
+        {
+            "A": 11,
+            "B": 13,
+            "ATOKEN": "sister",
+            "ASTARTX": 29,
+            "AENDX": 35,
+            "BTOKEN": "homeless",
+            "BSTARTX": 39,
+            "BENDX": 47
+        }
+    ]
+}
 """
 ```
 ## Example Scripts
@@ -78,34 +131,19 @@ within BERT which have the strongest dependency between tokens. Unification is t
 over the graph with respect to how BERT tokens maps tokens and subtokens.
 
 ```hy
-[[["i"
-   ["am"
-    ["writing"
-     ["this"
-      ["quickly"
-       "to"]]]]]
-
-
-  [["tell"
+[[["to"
     ["you"
-     ["it's"
-      "."]]]
-   ["the"
-    "end"]]]
-
+      ["it's"
+        ["the" "."]]]]
+  ["tell" "end"]]
  [[["my"
-    ["sister"
-     "is"]]
-   ["homeless"
-    ["."
-     "."]]]
-
-
+    ["is" "."]]
+   ["sister" "homeless"]]
   [["i"
-    ["am"
-     ["not"
+    [["am"
       ["homeless"
-       "hungry"]]]]
+       ["hungry" "."]]]
+     "not"]]
    "or"]]]
 ```
 
@@ -130,58 +168,48 @@ We compile the binary tree to SWI-Prolog.
 ```prolog
 %-- BERT-Parse Derived Facts:
 
-% token(index, token).
+% token(index, token, startx, endx).
 
-token(1, "i").
-token(2, "am").
-token(3, "writing").
-token(4, "this").
-token(5, "quickly").
-token(6, "to").
-token(7, "tell").
-token(8, "you").
-token(9, "it's").
-token(12, "the").
-token(13, "end").
-token(14, ".").
-token(15, "my").
-token(16, "sister").
-token(17, "is").
-token(18, "homeless").
-token(19, ".").
-token(20, "i").
-token(21, "am").
-token(22, "not").
-token(23, "homeless").
-token(24, "or").
-token(25, "hungry").
-token(26, ".").
+token(1, "to", 0, 2).
+token(2, "tell", 3, 7).
+token(3, "you", 8, 11).
+token(4, "it's", 12, 14).
+token(7, "the", 17, 20).
+token(8, "end", 21, 24).
+token(9, ".", 24, 25).
+token(10, "my", 26, 28).
+token(11, "sister", 29, 35).
+token(12, "is", 36, 38).
+token(13, "homeless", 39, 47).
+token(14, ".", 47, 48).
+token(15, "i", 49, 50).
+token(16, "am", 51, 53).
+token(17, "not", 54, 57).
+token(18, "homeless", 58, 66).
+token(19, "or", 67, 69).
+token(20, "hungry", 70, 76).
+token(21, ".", 76, 77).
 
 % tree(index, node1, node2).
 
-tree("_G￿17", 5, 6).
-tree("_G￿16", 4, "_G￿17").
-tree("_G￿15", 3, "_G￿16").
-tree("_G￿14", 2, "_G￿15").
+tree("_G￿16", 7, 9).
+tree("_G￿15", 4, "_G￿16").
+tree("_G￿14", 3, "_G￿15").
 tree("_G￿13", 1, "_G￿14").
-tree("_G￿21", 9, 14).
-tree("_G￿20", 8, "_G￿21").
-tree("_G￿19", 7, "_G￿20").
-tree("_G￿22", 12, 13).
-tree("_G￿18", "_G￿19", "_G￿22").
-tree("_G￿12", "_G￿13", "_G￿18").
-tree("_G￿26", 16, 17).
-tree("_G￿25", 15, "_G￿26").
-tree("_G￿28", 19, 26).
+tree("_G￿17", 2, 8).
+tree("_G￿12", "_G￿13", "_G￿17").
+tree("_G￿21", 12, 14).
+tree("_G￿20", 10, "_G￿21").
+tree("_G￿22", 11, 13).
+tree("_G￿19", "_G￿20", "_G￿22").
+tree("_G￿28", 20, 21).
 tree("_G￿27", 18, "_G￿28").
-tree("_G￿24", "_G￿25", "_G￿27").
-tree("_G￿33", 23, 25).
-tree("_G￿32", 22, "_G￿33").
-tree("_G￿31", 21, "_G￿32").
-tree("_G￿30", 20, "_G￿31").
-tree("_G￿29", "_G￿30", 24).
-tree("_G￿23", "_G￿24", "_G￿29").
-tree("_G￿11", "_G￿12", "_G￿23").
+tree("_G￿26", 16, "_G￿27").
+tree("_G￿25", "_G￿26", 17).
+tree("_G￿24", 15, "_G￿25").
+tree("_G￿23", "_G￿24", 19).
+tree("_G￿18", "_G￿19", "_G￿23").
+tree("_G￿11", "_G￿12", "_G￿18").
 ```
 
 By searching local subtrees for dependent terms, we can test for the presence
@@ -191,22 +219,23 @@ a homeless token which isn't dependent on a negation token or a family-identifie
 token.
 
 ```prolog
-%- Test 1
-?- typed_dependents(A, B, TOKENA, TOKENB, self, homeless).
-%[{"A" 20  "B" 23  "TOKENA" "i"  "TOKENB" "homeless"}
-% {"A" 15  "B" 18  "TOKENA" "my"  "TOKENB" "homeless"}]
+%--
+fam_homeless(A, B) :-
+  istype(A, fam),
+  istype(B, homeless),
+  undirected(A,B).
 
-%- Test 2
-?- typed_dependents(A, B, TOKENA, TOKENB, negex, homeless).
-%[{"A" 22  "B" 23  "TOKENA" "not"  "TOKENB" "homeless"}]
+%--
+negex_homeless(A, B) :-
+  istype(A, negex),
+  istype(B, homeless),
+  undirected(A,B).
 
-%- Test 3
-?- typed_dependents(A, B, TOKENA, TOKENB, fam, homeless).
-%[{"A" 16  "B" 18  "TOKENA" "sister"  "TOKENB" "homeless"}]
-
-%- Test 4
-?- typed_dependents(A, B, TOKENA, TOKENB, self, homeless),
-   not(typed_dependents(_, B, _, TOKENB, negex, homeless)),
-   not(typed_dependents(_, B, _, TOKENB, fam, homeless)).
-%[]
+%--
+self_homeless(A, B) :-
+  istype(A, self),
+  istype(B, homeless),
+  undirected(A,B),
+  not(fam_homeless(_,B)),
+  not(negex_homeless(_,B)).
 ```

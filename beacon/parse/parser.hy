@@ -3,6 +3,7 @@
 
 ;- Imports
 (import torch transformers
+        [time [time]]
         [numpy :as np]
         [pandas :as pd]
         [networkx :as nx]
@@ -12,7 +13,7 @@
 (transformers.logging.set_verbosity transformers.logging.ERROR)
 
 ;- Local Imports
-(import [beacon.parse.bert [bert-input tokenizer]]
+(import [beacon.bert [bert-input tokenizer]]
         [beacon.parse.ast [BertAST]])
 
 ;--
@@ -26,11 +27,11 @@
           self.priors priors))
 
   ;--
-  (defn __call__ [self text]
+  (defn __call__ [self text &optional [terms []]]
 
     ;- Main Parsing Routine
     (setv ;- Tokenize, Infer on Input and Extract Attention
-          (, attention-states token-index collapse-on) (self._inference text :layers self.layers)
+          (, attention-states token-index collapse-on) (self._inference text :layers self.layers :terms terms)
 
           ;- Combine Attention Heads and Format For Gini Select
           attention (self._aggregate_attention attention-states)
@@ -46,14 +47,14 @@
     (, ast G))
 
   ;--
-  (defn _inference [self text &optional [layers (range 12)]]
+  (defn _inference [self text &optional [layers (range 12)] [terms []]]
 
     ;- Tokenize Inputs
     (let [inputs (bert-input text)]
       (setv (, inputs attens tokens inds) inputs
 
             ;- Build DataFrame of Token Indexes and Collapsable Sub Tokens
-            (, token-index collapse-on) (self._build_token_index inputs tokens inds text)
+            (, token-index collapse-on) (self._build_token_index inputs tokens inds text terms)
 
             ;- Run Inference on Input using Bert
             (, inputs attens) (lfor i (, inputs attens) (.to i self.device))
@@ -69,7 +70,7 @@
       (, attention-states token-index collapse-on)))
 
   ;--
-  (defn _build_token_index [self inputs tokens inds text]
+  (defn _build_token_index [self inputs tokens inds text terms]
 
     ;- Build DataFrame of index, Token, Token_id, and String Start and End Indexes
     (let [inds (-> inds .int .detach .numpy first)
@@ -82,6 +83,7 @@
 
           ;- Using Start and End indexes, collect groups of dependent subtokens
           ; These will be contracted when building the Directed Graph
+          intersects (fn [startx endx term] (and (>= startx (first term)) (<= endx (last term))))
           collapse-on [] accum1 [] accum2 [] n None i None]
       (for [(, _ row) (.iterrows (get df ["index" "token" "startx" "endx"]))]
           (setv (, index token startx endx) row)
@@ -89,14 +91,22 @@
               (setv n index i endx accum1 [n] accum2 [token])
 
               ;- Contract on valid subtoken; Disregard punctuation.
-              (if (and (= i startx) (not (in token ["." "," ":" "!" "?"])))
+              (if (and (= i startx)
+                       (not (in token ["." "," ":" "!" "?"]))
+                       (> 1 (sum (lfor term terms (intersects startx endx term)))))
                   (do (.append accum1 index)
                       (.append accum2 token)
                       (setv i endx))
                   (do (when (> (len accum1) 1)
                         (.append collapse-on (, (tokenizer.convert_tokens_to_string accum2) accum1)))
                       (setv n index i endx accum1 [n] accum2 [token])))))
-
+      ;--
+      (for [term terms]
+        (setv intersects (fn [x] (and (>= (get x "startx") (first term)) (<= (get x "endx") (last term))))
+              term-tokens (get df (.apply (get df ["startx" "endx"]) intersects :axis 1))
+              accum1 (.to-list (get term-tokens "index"))
+              accum2 (tokenizer.convert_tokens_to_string (.to-list (get term-tokens "token"))))
+        (.append collapse-on (, accum2 accum1)))
       (, df collapse-on)))
 
   ;--
@@ -138,7 +148,11 @@
           values (/ (- values (.min values)) (- (.max values) (.min values))))
 
     ;- Reduce threshold on short sequences
-    (when (< (len values) 200) (-= threshold 0.1))
+    (when (< (len values) 1001) (setv threshold 0.5))
+    (when (< (len values) 1001) (setv threshold 0.5))
+    (when (< (len values) 901) (setv threshold 0.4))
+    (when (< (len values) 100) (setv threshold 0.1))
+
 
     ;- Calculate Ginis at all valid percentiles
     (setv df (-> (pd.DataFrame (lfor (, i v) (enumerate values) [i v]) :columns ["index" "value"]))
@@ -174,10 +188,12 @@
     (let [G (nx.DiGraph)]
 
       ;- Gather nodes and edges
-      (let [nodes (lfor (, i row) (.iterrows (get token-index ["index" "token" "token_id"]))
+      (let [nodes (lfor (, i row) (.iterrows (get token-index ["index" "token" "token_id" "startx" "endx"]))
                         (, (int (get row 0)) {"index" (get row 0)
                                               "token" (get row 1)
-                                              "token_id" (get row 2)}))
+                                              "token_id" (get row 2)
+                                              "startx" (get row 3)
+                                              "endx" (get row 4)}))
             pairs (lfor (, i row) (.iterrows (get token-relations ["index" "hit_index" "value"]))
                         (, (int (get row 0)) (int (get row 1)) {"weight" (get row 2)}))]
 
@@ -202,7 +218,9 @@
                               accum)
                  {"index" (get node "index")
                   "token" (get node "token")
-                  "token_id" (get node "token_id")})
+                  "token_id" (get node "token_id")
+                  "startx" (get node "startx")
+                  "endx" (get node "endx")})
             df (pd.DataFrame df)]
         (, G df))))
 
@@ -213,7 +231,7 @@
     (let [scorer (fn [G] (let [centrality (betweenness G :weight "weight")] (max centrality :key centrality.get)))
           hierarchy (girvan_newman G :most_valuable_edge scorer)
           ast (BertAST token-index)]
-      (for [level hierarchy]
+      (for [(, i level)  (enumerate hierarchy)]
         (for [leaf level]
           (let [leaf (lfor n (sorted leaf) (str n))]
             (._expand ast leaf))))

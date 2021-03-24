@@ -1,47 +1,29 @@
-Loading Time(sec): 3.4542009830474854
+Loading Time(sec): 5.129597187042236
 Text Sample:
 I am writing this quickly to tell you it's the end. My sister is homeless. I am not homeless or hungry.
 
 
-Elapsed Time(sec): 0.3176999092102051
+Elapsed Time(sec): 0.6469056606292725
+Matched 'homeless' Along 'to tell you it's the end. my sister is homeless. i am not homeless or hungry.'
 Bert Abstract Syntax Tree:
-[[["i" ["am" ["writing" ["this" ["quickly" "to"]]]]]
-  [["tell" ["you" ["it's" "."]]] ["the" "end"]]]
- [[["my" ["sister" "is"]] ["homeless" ["." "."]]]
-  [["i" ["am" ["not" ["homeless" "hungry"]]]] "or"]]]
+[[["to" ["you" ["it's" ["the" "."]]]] ["tell" "end"]]
+ [[["my" ["is" "."]] ["sister" "homeless"]]
+  [["i" [["am" ["homeless" ["hungry" "."]]] "not"]] "or"]]]
 
-Elapsed Time(sec): 3.054664134979248
+Elapsed Time(sec): 0.09807920455932617
 Query Results:
 {
-    "test1": [
-        {
-            "A": 15,
-            "B": 18,
-            "TOKENA": "my",
-            "TOKENB": "homeless"
-        },
-        {
-            "A": 20,
-            "B": 23,
-            "TOKENA": "i",
-            "TOKENB": "homeless"
-        }
-    ],
+    "test1": [],
     "test2": [
         {
-            "A": 22,
-            "B": 23,
-            "TOKENA": "not",
-            "TOKENB": "homeless"
+            "A": 11,
+            "B": 13,
+            "ATOKEN": "sister",
+            "ASTARTX": 29,
+            "AENDX": 35,
+            "BTOKEN": "homeless",
+            "BSTARTX": 39,
+            "BENDX": 47
         }
-    ],
-    "test3": [
-        {
-            "A": 16,
-            "B": 18,
-            "TOKENA": "sister",
-            "TOKENB": "homeless"
-        }
-    ],
-    "test4": []
+    ]
 }

@@ -5,7 +5,7 @@
          [hy.contrib.walk [let]])
 
 ;- Imports
-(import torch copy transformers json
+(import torch copy transformers json re
         [time [time]]
         [numpy :as np]
         [pandas :as pd]
@@ -13,27 +13,43 @@
         [torch.nn.functional :as F]
         [torch.utils.data [DataLoader]]
         [transformers [BertTokenizerFast BertForPreTraining BertForMaskedLM BertForSequenceClassification pipeline]]
-        [sklearn.metrics [accuracy_score precision_recall_fscore_support]])
+        [sklearn.metrics [accuracy_score precision_recall_fscore_support]]
+        [nltk.tokenize.treebank [TreebankWordTokenizer]])
+
+;-- BERT input/output interface
+(setv tokenizer (BertTokenizerFast.from_pretrained "bert-base-uncased")) ;"bionlp/bluebert_pubmed_mimic_uncased_L-12_H-768_A-12"))
 
 ;-- Read a standard BERT architecture and model weights if provided.
-(defn read-bert [&optional [from-pretrained "bert-base-uncased"]]
+(defn read-bert [&optional [from-pretrained "bert-base-uncased"]] ;"bionlp/bluebert_pubmed_mimic_uncased_L-12_H-768_A-12"]]
   (let [model (.from_pretrained BertForPreTraining from-pretrained)]
     (.eval model)))
 
 ;-- Read a standard BERT architecture and model weights if provided.
-(defn read-bert-MLM [&optional [from-pretrained "bert-base-uncased"]]
+(defn read-bert-MLM [&optional [from-pretrained "bionlp/bluebert_pubmed_mimic_uncased_L-12_H-768_A-12"]]
   (let [model (.from_pretrained BertForMaskedLM from-pretrained)]
     (.eval model)))
 
 ;-- Read a standard BERT architecture and model weights if provided.
-(defn read-bert-classifier [&optional [from-pretrained "bert-base-uncased"] [nb-classes None]]
+(defn read-bert-classifier [&optional [from-pretrained "bionlp/bluebert_pubmed_mimic_uncased_L-12_H-768_A-12"] [nb-classes None]]
   (let [model (if nb-classes
                 (.from_pretrained BertForSequenceClassification from-pretrained :num_labels nb-classes)
                 (.from_pretrained BertForSequenceClassification from-pretrained))]
     (.eval model)))
 
-;-- BERT input/output interface
-(setv tokenizer (BertTokenizerFast.from_pretrained "bert-base-uncased"))
+;--
+(let [regex1 (re.compile r"[\r\n]+")
+      regex2 (re.compile r"[^\x00-\x7F]+")
+      ;regex3 (re.compile r"\s's\b")
+      tokenizer (TreebankWordTokenizer)]
+  (defn preprocess [text]
+    (let [value (.lower text)
+          value (.sub regex1 " " value)
+          value (.sub regex2 " " value)
+          sentence value]
+          ;tokenized (.tokenize tokenizer value)
+          ;sentence (.join " " tokenized)]
+          ;sentence (.sub regex3 "'s" sentence)]
+      sentence)))
 
 ;--
 (defn bert-input [x &optional [nb-tokens None] [tokenizer tokenizer]]
@@ -50,7 +66,9 @@
 
 ;--
 (defn bert-output [x &optional [tokenizer tokenizer]]
-  (tokenizer.decode x :skip-special-tokens False :clean-up-tokenization-spaces True))
+  (if (isinstance x torch.Tensor)
+      (tokenizer.decode x :skip-special-tokens False :clean-up-tokenization-spaces True)
+      (tokenizer.convert_tokens_to_string x)))
 
 ;-- BERT token masking for training
 (defn mask-input [x &optional [nb-tokens None] [mask-percent 0.2] [indices None]]

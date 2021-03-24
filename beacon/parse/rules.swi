@@ -13,47 +13,120 @@
 %-- Base Predicates
 
 %-
+istype(A, TYPE) :-
+  token(A,ATOKEN,_,_),
+  call(TYPE,ATOKEN).
+
+%-
 connected(X,Y) :-
   tree(X,Y,_);
   tree(X,_,Y).
 
 %-
-path(A,B,Path) :-
-  travel(A,B,[A],Q),
-  reverse(Q,Path).
-
-%-
-travel(A,B,P,[B|P]) :-
+travel(A,B,P,[P|B]) :-
   connected(A, B).
 
 %-
-travel(A,B,Visited,Path) :-
+travel(A,B,V,P) :-
   connected(A,C),
   C \== B,
-  \+member(C,Visited),
-  travel(C,B,[C|Visited],Path).
+  \+member(C,V),
+  travel(C,B,[V|C],P).
 
 %-
-dependent(A, B) :-
-  dif(A, B),
-  path(C, A, _),
-  path(C, B, _),
-  (tree(C, A, _) ;
-   tree(C, _, A) ;
-   (tree(C,D,_), tree(D,A,_)) ;
-   (tree(C,D,_), tree(D,_,A)) ;
-   (tree(C,_,D), tree(D,A,_)) ;
-   (tree(C,D,_), tree(D,_,A))).
+path(A,B) :-
+  travel(A,B,[A],_).
 
 %-
-dependent_tokens(A, B, TOKENA, TOKENB) :-
-  token(A,TOKENA),
-  token(B,TOKENB),
-  (dependent(A, B);dependent(B, A)).
+embedded_subtree(A, B) :-
+  A \== B,
+  tree(E,A,_),
+  tree(E,_,B).
 
 %-
-typed_dependents(A, B, TOKENA, TOKENB, TYPEA, TYPEB) :-
-  dependent_tokens(A, B, TOKENA, TOKENB),
-  (call(TYPEA,TOKENA),call(TYPEB,TOKENB)).
+embedded_subtree(A, B) :-
+  A \== B,
+  tree(E,_,B),
+  tree(E,C,_),
+  path(C, A).
+
+%-
+embedded_subtree(A, B) :-
+  A \== B,
+  tree(E,A,_),
+  tree(E,_,D),
+  path(D, B).
+
+%-
+embedded_subtree(A, B) :-
+  A \== B,
+  tree(E,_,F),
+  (tree(F,_,B);tree(F,B,_)),
+  tree(E,C,_),
+  path(C, A).
+
+%-
+embedded_subtree(A, B) :-
+  A \== B,
+  tree(E,F,_),
+  (tree(F,A,_);tree(F,_,A)),
+  tree(E,_,D),
+  path(D, B).
+
+% %
+% embedded_subtree(A, B) :-
+%   A \== B,
+%   tree(E,_,F),
+%   (tree(F,_,T);tree(F,T,_)), path(T,B),
+%   tree(E,C,_),
+%   path(C, A).
+%
+% %-
+% embedded_subtree(A, B) :-
+%   A \== B,
+%   tree(E,F,_),
+%   (tree(F,T,_);tree(F,_,T)), path(T,A),
+%   tree(E,_,D),
+%   path(D, B).
+
+%-
+directed(A, B) :-
+  token(A,_,_,_),
+  token(B,_,_,_),
+  embedded_subtree(A, B).
+
+%-
+undirected(A, B) :-
+  directed(A,B);
+  directed(B,A).
+
+% %-
+% predicate(A, B, C) :-
+%   directed(B,A),
+%   directed(A,C).
+%
+%
+% %-
+% linked_subtree(A, B) :-
+%   A \== B,
+%   tree(E,A,_),
+%   tree(E,_,B).
+%
+% %-
+% linked_subtree(A, B) :-
+%   A \== B,
+%   tree(E,C,_),
+%   tree(E,_,D),
+%   path(C, A),
+%   path(D, B).
+%
+% %-
+% dependent(A,B) :-
+%   token(A,_,_,_),
+%   token(B,_,_,_),
+%   A < B,
+%   embedded_subtree(A, B).
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%

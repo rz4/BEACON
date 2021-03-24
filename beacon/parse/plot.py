@@ -44,6 +44,6 @@ def export_KG(G, filename):
 
     #-
     nx.draw(G, pos_nodes, arrowsize=3, width=edges_width, node_size=node_sizes, node_color=node_colors)
-    nx.draw_networkx_labels(G, pos_attrs, labels=node_attri, font_weight='bold', font_size=9)
+    nx.draw_networkx_labels(G, pos_attrs, labels=node_attri, font_weight='bold', font_size=8)
     plt.savefig(filename, bbox_inches='tight')
     plt.clf()

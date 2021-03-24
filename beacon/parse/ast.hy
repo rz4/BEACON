@@ -19,20 +19,23 @@
   (.format script facts))
 
 ;--
-(let [PROLOG (Prolog)
-      PATH (+ FILEPATH "/temp.swi")]
+(let [PATH (+ FILEPATH "/temp.swi")
+      PROLOG (Prolog)]
   (defn eval-prolog [queries script]
-    (with [f (open PATH "w")] (f.write script))
-    (.consult PROLOG PATH)
-    (os.remove PATH)
-    (let [out {}]
-      (for [key queries]
-        (setv query (get queries key)
-              output (lfor x (.query PROLOG query) x)
-              encode (fn [x] (if (isinstance x bytes) (.decode x) (if (isinstance x int) x)))
-              output (lfor y (set (lfor x output (tuple (lfor (, key val) (.items x) (, key (encode val)))))) (dict y)))
-        (assoc out key output))
-      out)))
+
+    (with [f (open PATH "w")] (f.write script)
+      (.consult PROLOG PATH)
+      (os.remove PATH)
+
+      (let [out {}]
+        (for [key queries]
+          (setv query (get queries key)
+                output (lfor x (.query PROLOG query) x)
+                encode (fn [x] (if (isinstance x bytes) (.decode x) (if (isinstance x int) x)))
+                output (lfor y (set (lfor x output (tuple (lfor (, key val) (.items x) (, key (encode val)))))) (dict y)))
+          (assoc out key output))
+
+        out))))
 
 ;--
 (defclass BertAST []
@@ -41,7 +44,7 @@
   (defn __init__ [self token-index]
     (setv self.token-index token-index
           self.tokens (self._format_tokens token-index)
-          self.tree (OrderedDict)
+          self.tree {}
           self.facts None))
 
   ;--
@@ -71,7 +74,7 @@
         (assoc branch (.join "," new-leaf) {}))))
 
   ;--
-  (defn _to-prolog [self &optional [root None] [agg []]]
+  (defn _to-prolog [self &optional [root None] [agg None]]
     (let [branch (if (none? root) self.tree root)
           kid (.format "\"{}\"" (str (gensym)))]
       (.append agg
@@ -82,7 +85,9 @@
               (if (empty? (get branch key))
                   (str (int key))
                   (self._to-prolog (get branch key) :agg agg))))))
-      (if (none? root) (.join "\n" agg) kid)))
+      (if (none? root)
+          (.join "\n" agg)
+          kid)))
 
   ;--
   (defn _compile [self &optional [priors None]]
@@ -93,15 +98,16 @@
 
       ;-
       (let [token-facts []]
-        (.append token-facts "% token(index, token).\n")
-        (for [(, key value) (.items self.tokens)]
-          (.append token-facts (.format "token({}, \"{}\")." key (str value))))
+        (.append token-facts "% token(index, token, startx, endx).\n")
+        (for [(, i row) (.iterrows self.token-index)]
+          (setv (, index token _ startx endx) row)
+          (.append token-facts (.format "token({}, \"{}\", {}, {})." index (.replace token "\"" "\\\"") startx endx)))
         (.append script (.join "\n" token-facts)))
 
       ;-
       (let [branch-facts []]
         (.append branch-facts "% tree(index, node1, node2).")
-        (.append branch-facts (.format "{}" (self._to-prolog)))
+        (.append branch-facts (.format "{}" (self._to-prolog :agg [])))
         (.append script branch-facts))
 
       (setv self.facts (.join "\n\n" (flatten script)))))
